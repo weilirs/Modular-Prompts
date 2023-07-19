@@ -98,6 +98,9 @@ const reducer = (state = initialState, action: Action) => {
           )
         }
       })
+
+    default:
+      return state
   }
 }
 export default reducer

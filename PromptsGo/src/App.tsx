@@ -1,11 +1,17 @@
 import "./App.css"
 import RightSider from "./components/rightSider/RightSider"
+import Center from "./components/center/Center"
+import { Provider } from "react-redux"
+import { store } from "./state"
 
-function App() {
+const App = () => {
   return (
-    <>
-      <RightSider />
-    </>
+    <Provider store={store}>
+      <div>
+        <Center />
+        <RightSider />
+      </div>
+    </Provider>
   )
 }
 

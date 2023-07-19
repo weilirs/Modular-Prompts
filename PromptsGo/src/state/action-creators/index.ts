@@ -1,7 +1,6 @@
 import { ActionType } from "../action-types"
 import { BlockTypes } from "../block"
 
-
 export const insertBlockAfter = (blockType: BlockTypes, content: string) => {
   return {
     type: ActionType.INSERT_BLOCK_AFTER,
