@@ -10,9 +10,9 @@ interface BlocksContainerProps {
 
 function isBlockTypes(category: string): category is BlockTypes {
   return [
-    "background",
-    "character",
-    "mission",
+    "Background",
+    "Character",
+    "Mission",
     "output_requirement",
     "other_requirement",
   ].includes(category)

@@ -5,9 +5,9 @@ import { produce } from "immer"
 interface BlocksState {
   order: string[] // order of types
   data: { [key: string]: Block }
-  background: string[]
-  character: string[]
-  mission: string[]
+  Background: string[]
+  Character: string[]
+  Mission: string[]
   output_requirement: string[]
   other_requirement: string[]
 }
@@ -15,9 +15,9 @@ interface BlocksState {
 const initialState: BlocksState = {
   order: [],
   data: {},
-  background: [],
-  character: [],
-  mission: [],
+  Background: [],
+  Character: [],
+  Mission: [],
   output_requirement: [],
   other_requirement: [],
 }
@@ -34,14 +34,14 @@ const reducer = (state = initialState, action: Action) => {
 
         // insert this id to the corresponding type array
         switch (action.payload.type) {
-          case "background":
-            draftState.background.push(newBlock.id)
+          case "Background":
+            draftState.Background.push(newBlock.id)
             break
-          case "character":
-            draftState.character.push(newBlock.id)
+          case "Character":
+            draftState.Character.push(newBlock.id)
             break
-          case "mission":
-            draftState.mission.push(newBlock.id)
+          case "Mission":
+            draftState.Mission.push(newBlock.id)
             break
           case "output_requirement":
             draftState.output_requirement.push(newBlock.id)
@@ -61,18 +61,18 @@ const reducer = (state = initialState, action: Action) => {
       return produce(state, (draftState) => {
         // delete the id from the corresponding type array
         switch (action.payload.type) {
-          case "background":
-            draftState.background = draftState.background.filter(
+          case "Background":
+            draftState.Background = draftState.Background.filter(
               (id) => id !== action.payload.id
             )
             break
-          case "character":
-            draftState.character = draftState.character.filter(
+          case "Character":
+            draftState.Character = draftState.Character.filter(
               (id) => id !== action.payload.id
             )
             break
-          case "mission":
-            draftState.mission = draftState.mission.filter(
+          case "Mission":
+            draftState.Mission = draftState.Mission.filter(
               (id) => id !== action.payload.id
             )
             break

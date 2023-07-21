@@ -1,10 +1,7 @@
-import { useActions } from "../../hooks/use-actions"
 import { useTypedSelector } from "../../hooks/use-typed-selector"
 import { useEffect, useState } from "react"
 
-const Center: React.FC = () => {
-  const { deleteBlock } = useActions()
-
+const LeftSider: React.FC = () => {
   // retrieve the state from redux store
   const {
     blocks: {
@@ -46,22 +43,14 @@ const Center: React.FC = () => {
     other_requirement,
   ])
 
-  const renderedBlocks = blockCollectionState.map((block) => (
-    <button
-      key={block.id}
-      onDoubleClick={() => {
-        deleteBlock(block.type, block.id)
-      }}
-    >
-      {block.type}: {block.content}
-    </button>
-  ))
-
-  return (
-    <div className="border-4 border-black p-4">
-      <div className="flex flex-col">{renderedBlocks}</div>
-    </div>
-  )
+  const blockslist = blockCollectionState.map((block, index) => {
+    return (
+      <li key={index}>
+        {block.type}: {block.content}
+      </li>
+    )
+  })
+  return <ul>{blockslist}</ul>
 }
 
-export default Center
+export default LeftSider

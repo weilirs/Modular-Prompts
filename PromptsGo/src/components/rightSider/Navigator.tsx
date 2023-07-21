@@ -8,7 +8,7 @@ const Navigator: React.FC<NavigatorProps> = ({ setSelectedButton }) => {
       <div className="grid grid-cols-6 gap-4 divide-x divide-gray-300">
         <button
           className="text-center"
-          onClick={() => setSelectedButton("character")}
+          onClick={() => setSelectedButton("Character")}
         >
           Character
         </button>

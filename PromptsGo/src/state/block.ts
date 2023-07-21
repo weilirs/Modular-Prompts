@@ -1,7 +1,7 @@
 export type BlockTypes =
-  | "background"
-  | "character"
-  | "mission"
+  | "Background"
+  | "Character"
+  | "Mission"
   | "output_requirement"
   | "other_requirement"
 
