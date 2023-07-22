@@ -22,6 +22,7 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
   selectedButton,
 }) => {
   const [buttons, setButtons] = useState<any[]>([])
+  const [expandedStates, setExpandedStates] = useState({})
 
   const { insertBlockAfter } = useActions()
   const temp = useTypedSelector((state) => state.blocks.data)
@@ -43,19 +44,32 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
     ))
     setButtons(newButtons)
   }
+
+  const toggleExpandCollapse = (categoryName) => {
+    setExpandedStates((prevState) => ({
+      ...prevState,
+      [categoryName]: !prevState[categoryName],
+    }))
+  }
   return (
-    // render an array of blocks based on the selected button which match the "category" in data.ts
     <div className="grid grid-cols-2 gap-4">
       {selected?.minorCategories?.map((minor) => (
-        <button
-          key={minor.name}
-          className="text-center"
-          onClick={() => handleButtonClick(minor)}
-        >
-          {minor.name}
-        </button>
+        <div key={minor.name}>
+          <button
+            className="text-center"
+            onClick={() => {
+              handleButtonClick(minor)
+              toggleExpandCollapse(minor.name)
+            }}
+          >
+            {minor.name}
+          </button>
+          {/* Collapse/Expand button */}
+          <button onClick={() => toggleExpandCollapse(minor.name)}></button>
+          {/* Conditionally display buttons */}
+          {expandedStates[minor.name] && buttons}
+        </div>
       ))}
-      {buttons}
     </div>
   )
 }

@@ -3,7 +3,7 @@ import { useTypedSelector } from "../../hooks/use-typed-selector"
 import { useEffect, useState } from "react"
 
 const Center: React.FC = () => {
-  const { deleteBlock } = useActions()
+  const { deleteBlock, updateBlock } = useActions()
 
   // retrieve the state from redux store
   const {
@@ -47,14 +47,15 @@ const Center: React.FC = () => {
   ])
 
   const renderedBlocks = blockCollectionState.map((block) => (
-    <button
-      key={block.id}
+    <input
+      type="text"
+      value={block.content}
+      onChange={(e) => updateBlock(block.id, e.target.value)}
       onDoubleClick={() => {
         deleteBlock(block.type, block.id)
       }}
-    >
-      {block.type}: {block.content}
-    </button>
+      title={`This is block with ID: ${block.id} and content: ${block.content}`}
+    />
   ))
 
   return (

@@ -20,3 +20,13 @@ export const deleteBlock = (blockType: BlockTypes, id: string) => {
     },
   }
 }
+
+export const updateBlock = (id: string, content: string) => {
+  return {
+    type: ActionType.UPDATE_BLOCK,
+    payload: {
+      id: id,
+      content: content,
+    },
+  }
+}

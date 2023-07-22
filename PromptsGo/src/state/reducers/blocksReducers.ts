@@ -99,6 +99,11 @@ const reducer = (state = initialState, action: Action) => {
         }
       })
 
+    case ActionType.UPDATE_BLOCK:
+      return produce(state, (draftState) => {
+        draftState.data[action.payload.id].content = action.payload.content
+      })
+
     default:
       return state
   }

@@ -43,6 +43,19 @@ const LeftSider: React.FC = () => {
     other_requirement,
   ])
 
+  const blocksText = blockCollectionState
+    .map((block) => `${block.type}: ${block.content}`)
+    .join("\n")
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      console.log("Copied to clipboard")
+    } catch (err) {
+      console.error("Failed to copy text: ", err)
+    }
+  }
+
   const blockslist = blockCollectionState.map((block, index) => {
     return (
       <li key={index}>
@@ -50,7 +63,13 @@ const LeftSider: React.FC = () => {
       </li>
     )
   })
-  return <ul>{blockslist}</ul>
+
+  return (
+    <>
+      <ul>{blockslist}</ul>
+      <button onClick={() => copyToClipboard(blocksText)}>Copy All</button>
+    </>
+  )
 }
 
 export default LeftSider

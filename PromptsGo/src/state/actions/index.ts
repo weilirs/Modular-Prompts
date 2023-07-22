@@ -17,4 +17,15 @@ export interface DeleteBlockAction {
   }
 }
 
-export type Action = InsertBlockAfterAction | DeleteBlockAction
+export interface UpdateBlockAction {
+  type: ActionType.UPDATE_BLOCK
+  payload: {
+    id: string
+    content: string
+  }
+}
+
+export type Action =
+  | InsertBlockAfterAction
+  | DeleteBlockAction
+  | UpdateBlockAction
