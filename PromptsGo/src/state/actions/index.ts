@@ -25,7 +25,12 @@ export interface UpdateBlockAction {
   }
 }
 
+export interface ClearAction {
+  type: ActionType.CLEAR
+}
+
 export type Action =
   | InsertBlockAfterAction
   | DeleteBlockAction
   | UpdateBlockAction
+  | ClearAction

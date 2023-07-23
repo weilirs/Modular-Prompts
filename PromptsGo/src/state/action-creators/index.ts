@@ -30,3 +30,9 @@ export const updateBlock = (id: string, content: string) => {
     },
   }
 }
+
+export const clear = () => {
+  return {
+    type: ActionType.CLEAR,
+  }
+}

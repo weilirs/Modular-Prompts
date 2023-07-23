@@ -104,6 +104,18 @@ const reducer = (state = initialState, action: Action) => {
         draftState.data[action.payload.id].content = action.payload.content
       })
 
+    case ActionType.CLEAR:
+      return produce(state, (draftState) => {
+        // reset everything in the state
+        draftState.order = []
+        draftState.data = {}
+        draftState.Background = []
+        draftState.Character = []
+        draftState.Mission = []
+        draftState.output_requirement = []
+        draftState.other_requirement = []
+      })
+
     default:
       return state
   }

@@ -1,7 +1,9 @@
 import { useTypedSelector } from "../../hooks/use-typed-selector"
 import { useEffect, useState } from "react"
+import { useActions } from "../../hooks/use-actions"
 
 const LeftSider: React.FC = () => {
+  const { clear } = useActions()
   // retrieve the state from redux store
   const {
     blocks: {
@@ -68,6 +70,7 @@ const LeftSider: React.FC = () => {
     <>
       <ul>{blockslist}</ul>
       <button onClick={() => copyToClipboard(blocksText)}>Copy All</button>
+      <button onClick={() => clear()}>Clear All</button>
     </>
   )
 }
