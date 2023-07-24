@@ -1,8 +1,8 @@
 import { data } from "../../data/data"
 import { useActions } from "../../hooks/use-actions"
 import { BlockTypes } from "../../state"
-import { useTypedSelector } from "../../hooks/use-typed-selector"
 import { useState } from "react"
+import { Collapse, CollapseProps, Button } from "antd"
 
 interface BlocksContainerProps {
   selectedButton: string
@@ -21,55 +21,37 @@ function isBlockTypes(category: string): category is BlockTypes {
 const BlocksContainer: React.FC<BlocksContainerProps> = ({
   selectedButton,
 }) => {
-  const [buttons, setButtons] = useState<any[]>([])
-  const [expandedStates, setExpandedStates] = useState({})
-
   const { insertBlockAfter } = useActions()
-  const temp = useTypedSelector((state) => state.blocks.data)
   const selected = data.tables?.find(
     (block) => block.category === selectedButton
   )
-  const handleButtonClick = (minor: any) => {
-    const newButtons = minor.legos?.map((block: any) => (
-      <button
-        key={block.keyWord}
-        onClick={() => {
-          if (isBlockTypes(selected.category)) {
-            insertBlockAfter(selected.category, block.keyWord)
-          }
-        }}
-      >
-        {block.keyWord}
-      </button>
-    ))
-    setButtons(newButtons)
-  }
 
-  const toggleExpandCollapse = (categoryName) => {
-    setExpandedStates((prevState) => ({
-      ...prevState,
-      [categoryName]: !prevState[categoryName],
-    }))
-  }
-  return (
-    <div className="grid grid-cols-2 gap-4 h-40 border border-blue-800">
-      {selected?.minorCategories?.map((minor) => (
-        <div key={minor.name}>
-          <button
-            className="text-center"
-            onClick={() => {
-              handleButtonClick(minor)
-              toggleExpandCollapse(minor.name)
-            }}
-          >
-            {minor.name}
-          </button>
-          {/* Collapse/Expand button */}
-          <button onClick={() => toggleExpandCollapse(minor.name)}></button>
-          {/* Conditionally display buttons */}
-          {expandedStates[minor.name] && buttons}
+  const items: CollapseProps["items"] = selected?.minorCategories?.map(
+    (minor) => ({
+      label: minor.name,
+      key: minor.name,
+      children: (
+        <div className="grid grid-cols-2 gap-2">
+          {minor.legos?.map((block) => (
+            <Button
+              key={block.keyWord}
+              onClick={() => {
+                if (isBlockTypes(selected.category)) {
+                  insertBlockAfter(selected.category, block.keyWord)
+                }
+              }}
+            >
+              {block.keyWord}
+            </Button>
+          ))}
         </div>
-      ))}
+      ),
+    })
+  )
+
+  return (
+    <div className="flex flex-col gap-4 border border-blue-800 overflow-auto">
+      <Collapse items={items} ghost={true} />
     </div>
   )
 }
