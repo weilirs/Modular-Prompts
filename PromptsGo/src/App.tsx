@@ -3,21 +3,24 @@ import Center from "./components/center/Center"
 import LeftSider from "./components/leftSider/leftSider"
 import { Provider } from "react-redux"
 import { store } from "./state"
+import { Col, Row } from "antd"
 
 const App = () => {
   return (
     <Provider store={store}>
-      <div className="flex">
-        <div className="w-1/3 h-500">
+      <Row>
+        <Col span={8}>
           <LeftSider />
-        </div>
-        <div className="w-1/3 h-500">
+        </Col>
+
+        <Col span={6}>
           <Center />
-        </div>
-        <div className="w-1/3 h-500">
+        </Col>
+
+        <Col span={10}>
           <RightSider />
-        </div>
-      </div>
+        </Col>
+      </Row>
     </Provider>
   )
 }

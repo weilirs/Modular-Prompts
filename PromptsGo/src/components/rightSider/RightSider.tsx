@@ -5,7 +5,7 @@ const RightSider = () => {
   // pass the information of the selected button in Navigator to BlocksContainer
   const [selectedButton, setSelectedButton] = useState("程度")
   return (
-    <div className="border-4 border-black p-4">
+    <div className="h-64">
       <Navigator setSelectedButton={setSelectedButton} />
       <BlocksContainer selectedButton={selectedButton} />
     </div>
