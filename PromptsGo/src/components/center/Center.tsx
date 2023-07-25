@@ -1,6 +1,7 @@
 import { useActions } from "../../hooks/use-actions"
 import { useTypedSelector } from "../../hooks/use-typed-selector"
 import { useEffect, useState } from "react"
+import { Input } from "antd"
 
 const Center: React.FC = () => {
   const { deleteBlock, updateBlock } = useActions()
@@ -47,20 +48,20 @@ const Center: React.FC = () => {
   ])
 
   const renderedBlocks = blockCollectionState.map((block) => (
-    <input
-      type="text"
-      value={block.content}
+    <Input
+      className="mb-4"
+      placeholder={block.content}
+      value={block.detail}
       onChange={(e) => updateBlock(block.id, e.target.value)}
       onDoubleClick={() => {
         deleteBlock(block.type, block.id)
       }}
-      title={`This is block with ID: ${block.id} and content: ${block.content}`}
     />
   ))
 
   return (
     <div className="border-4 border-black p-4">
-      <div className="flex flex-col">{renderedBlocks}</div>
+      <div className="flex flex-col ">{renderedBlocks}</div>
     </div>
   )
 }

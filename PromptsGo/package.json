@@ -12,12 +12,14 @@
   "dependencies": {
     "antd": "^5.7.2",
     "immer": "^10.0.2",
+    "jinaai": "^0.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.1.1",
     "redux": "^4.2.1"
   },
   "devDependencies": {
+    "@types/node": "^20.4.4",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "@typescript-eslint/eslint-plugin": "^5.61.0",

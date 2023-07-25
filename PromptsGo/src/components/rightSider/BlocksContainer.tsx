@@ -2,7 +2,7 @@ import { data } from "../../data/data"
 import { useActions } from "../../hooks/use-actions"
 import { BlockTypes } from "../../state"
 import { useState } from "react"
-import { Collapse, CollapseProps, Button } from "antd"
+import { Collapse, CollapseProps, Button, Tooltip } from "antd"
 
 interface BlocksContainerProps {
   selectedButton: string
@@ -33,16 +33,29 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
       children: (
         <div className="grid grid-cols-2 gap-2">
           {minor.legos?.map((block) => (
-            <Button
-              key={block.keyWord}
-              onClick={() => {
-                if (isBlockTypes(selected.category)) {
-                  insertBlockAfter(selected.category, block.keyWord)
-                }
-              }}
-            >
-              {block.keyWord}
-            </Button>
+            <Tooltip title={block.detail}>
+              <Button
+                key={block.keyWord}
+                onClick={() => {
+                  if (isBlockTypes(selected.category)) {
+                    insertBlockAfter(
+                      selected.category,
+                      block.keyWord,
+                      block.detail
+                    )
+                  }
+                }}
+                style={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  display: "block",
+                  width: "100%",
+                }}
+              >
+                {block.keyWord}
+              </Button>
+            </Tooltip>
           ))}
         </div>
       ),

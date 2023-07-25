@@ -1,10 +1,14 @@
 import { useTypedSelector } from "../../hooks/use-typed-selector"
 import { useEffect, useState } from "react"
 import { useActions } from "../../hooks/use-actions"
-
+import { Button } from "antd"
+import OriginalText from "./OriginalText"
+import promptperfect from "./PromptsPerfect"
+import OptimizedText from "./OptimizedText"
 const LeftSider: React.FC = () => {
+  const [optimizedText, setOptimizedText] = useState("")
+
   const { clear } = useActions()
-  // retrieve the state from redux store
   const {
     blocks: {
       order,
@@ -17,7 +21,6 @@ const LeftSider: React.FC = () => {
     },
   } = useTypedSelector((state) => state)
 
-  const [collectionState, setCollectionState] = useState([])
   const [blockCollectionState, setblockCollectionState] = useState([])
 
   useEffect(() => {
@@ -31,10 +34,7 @@ const LeftSider: React.FC = () => {
       else if (order[i] === "other_requirement")
         collection.push(...other_requirement)
     }
-    setCollectionState(collection)
-
-    const blockCollection = collection.map((id) => data[id])
-    setblockCollectionState(blockCollection)
+    setblockCollectionState(collection.map((id) => data[id]))
   }, [
     order,
     data,
@@ -45,8 +45,12 @@ const LeftSider: React.FC = () => {
     other_requirement,
   ])
 
+  useEffect(() => {
+    console.log(optimizedText)
+  }, [optimizedText])
+
   const blocksText = blockCollectionState
-    .map((block) => `${block.type}: ${block.content}`)
+    .map((block) => `${block.type}: ${block.detail}`)
     .join("\n")
 
   const copyToClipboard = async (text: string) => {
@@ -58,19 +62,27 @@ const LeftSider: React.FC = () => {
     }
   }
 
-  const blockslist = blockCollectionState.map((block, index) => {
-    return (
-      <li key={index}>
-        {block.type}: {block.content}
-      </li>
-    )
-  })
+  const apikey =
+    "lniDxIN1UStHOsnbi29I:341bd68546d0eccf0385488f9851b37ffd43f387d0ab753094759f1d8940ac0a"
+  const prompts = async () => {
+    try {
+      const response = await promptperfect(blocksText, "chatgpt", apikey)
+      const optimized = await response.json()
+      console.log(optimized.result.promptOptimized)
+      setOptimizedText(optimized.result.promptOptimized) // add this line
+      console.log(optimizedText)
+    } catch (err) {
+      console.error("Failed to optimize text: ", err)
+    }
+  }
 
   return (
     <>
-      <ul>{blockslist}</ul>
-      <button onClick={() => copyToClipboard(blocksText)}>Copy All</button>
-      <button onClick={() => clear()}>Clear All</button>
+      <OriginalText blocksText={blocksText} />
+      <Button onClick={() => copyToClipboard(blocksText)}>Copy All</Button>
+      <Button onClick={() => clear()}>Clear All</Button>
+      <Button onClick={() => prompts()}>Optimize</Button>
+      <OptimizedText optimizedText={optimizedText} />
     </>
   )
 }

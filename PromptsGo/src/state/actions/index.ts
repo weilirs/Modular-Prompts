@@ -6,6 +6,7 @@ export interface InsertBlockAfterAction {
   payload: {
     type: BlockTypes
     content: string
+    detail: string
   }
 }
 
@@ -21,7 +22,7 @@ export interface UpdateBlockAction {
   type: ActionType.UPDATE_BLOCK
   payload: {
     id: string
-    content: string
+    detail: string
   }
 }
 

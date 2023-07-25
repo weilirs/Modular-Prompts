@@ -1,12 +1,17 @@
 import { ActionType } from "../action-types"
 import { BlockTypes } from "../block"
 
-export const insertBlockAfter = (blockType: BlockTypes, content: string) => {
+export const insertBlockAfter = (
+  blockType: BlockTypes,
+  content: string,
+  detail: string
+) => {
   return {
     type: ActionType.INSERT_BLOCK_AFTER,
     payload: {
       type: blockType,
       content: content,
+      detail: detail,
     },
   }
 }
@@ -21,12 +26,12 @@ export const deleteBlock = (blockType: BlockTypes, id: string) => {
   }
 }
 
-export const updateBlock = (id: string, content: string) => {
+export const updateBlock = (id: string, detail: string) => {
   return {
     type: ActionType.UPDATE_BLOCK,
     payload: {
       id: id,
-      content: content,
+      detail: detail,
     },
   }
 }

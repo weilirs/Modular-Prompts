@@ -9,4 +9,5 @@ export interface Block {
   id: string
   type: BlockTypes
   content: string
+  detail: string
 }
