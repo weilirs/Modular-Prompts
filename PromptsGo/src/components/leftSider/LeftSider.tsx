@@ -1,12 +1,13 @@
 import { useTypedSelector } from "../../hooks/use-typed-selector"
 import { useEffect, useState } from "react"
 import { useActions } from "../../hooks/use-actions"
-import { Button } from "antd"
+import { Button, Input } from "antd"
 import OriginalText from "./OriginalText"
 import promptperfect from "./PromptsPerfect"
 import OptimizedText from "./OptimizedText"
 const LeftSider: React.FC = () => {
   const [optimizedText, setOptimizedText] = useState("")
+  const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "")
 
   const { clear } = useActions()
   const {
@@ -45,10 +46,6 @@ const LeftSider: React.FC = () => {
     other_requirement,
   ])
 
-  useEffect(() => {
-    console.log(optimizedText)
-  }, [optimizedText])
-
   const blocksText = blockCollectionState
     .map((block) => `${block.type}: ${block.detail}`)
     .join("\n")
@@ -62,15 +59,20 @@ const LeftSider: React.FC = () => {
     }
   }
 
-  const apikey =
-    "lniDxIN1UStHOsnbi29I:341bd68546d0eccf0385488f9851b37ffd43f387d0ab753094759f1d8940ac0a"
+  const handleInputChange = (event) => {
+    setApiKey(event.target.value)
+  }
+
+  const handleSave = () => {
+    localStorage.setItem("apiKey", apiKey)
+    alert("API key saved!")
+  }
+
   const prompts = async () => {
     try {
-      const response = await promptperfect(blocksText, "chatgpt", apikey)
+      const response = await promptperfect(blocksText, "chatgpt", apiKey)
       const optimized = await response.json()
-      console.log(optimized.result.promptOptimized)
       setOptimizedText(optimized.result.promptOptimized) // add this line
-      console.log(optimizedText)
     } catch (err) {
       console.error("Failed to optimize text: ", err)
     }
@@ -82,6 +84,12 @@ const LeftSider: React.FC = () => {
       <Button onClick={() => copyToClipboard(blocksText)}>Copy All</Button>
       <Button onClick={() => clear()}>Clear All</Button>
       <Button onClick={() => prompts()}>Optimize</Button>
+      <Input
+        placeholder={"Enter API Key for Optimized Prompts"}
+        value={apiKey}
+        onChange={handleInputChange}
+      />
+      <Button onClick={handleSave}>Save API Key</Button>
       <OptimizedText optimizedText={optimizedText} />
     </>
   )
