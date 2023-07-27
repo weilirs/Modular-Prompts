@@ -3,9 +3,7 @@ import reducers from "./reducers"
 import { loadState, saveState } from "../utils/localStorage"
 import throttle from "lodash/throttle"
 
-const persistedState = loadState()
-
-export const store = createStore(reducers, persistedState)
+export const store = createStore(reducers)
 
 store.subscribe(
   throttle(() => {

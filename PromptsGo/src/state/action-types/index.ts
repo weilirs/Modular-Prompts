@@ -4,4 +4,5 @@ export enum ActionType {
   UPDATE_BLOCK = "update_block",
   CLEAR = "clear",
   ADD_NEW_LEGO = "add_new_lego",
+  DELETE_LEGO = "delete_lego",
 }

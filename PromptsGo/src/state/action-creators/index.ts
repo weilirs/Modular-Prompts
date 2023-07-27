@@ -52,6 +52,17 @@ export const addNewBlock = (
   }
 }
 
+export const deleteLego = (category: string, name: string, keyWord: string) => {
+  return {
+    type: ActionType.DELETE_LEGO,
+    payload: {
+      category,
+      name,
+      keyWord,
+    },
+  }
+}
+
 export const clear = () => {
   return {
     type: ActionType.CLEAR,

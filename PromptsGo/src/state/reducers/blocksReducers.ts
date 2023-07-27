@@ -7,7 +7,6 @@ import { loadState } from "../../utils/localStorage"
 
 const persistedState = loadState()
 
-const initialDataset = persistedState ? persistedState.dataset : data
 interface BlocksState {
   order: string[] // order of types
   data: { [key: string]: Block }
@@ -27,7 +26,7 @@ const initialState: BlocksState = {
   Mission: [],
   output_requirement: [],
   other_requirement: [],
-  dataset: initialDataset,
+  dataset: persistedState ? persistedState.blocks.dataset : data,
 }
 
 const reducer = (state = initialState, action: Action) => {
@@ -130,6 +129,25 @@ const reducer = (state = initialState, action: Action) => {
             for (const minorCat of minorCategories) {
               if (name === minorCat.name) {
                 minorCat.legos.push(newLego)
+              }
+            }
+          }
+        }
+      })
+
+    case ActionType.DELETE_LEGO:
+      return produce(state, (draftState) => {
+        const category = action.payload.category
+        const name = action.payload.name
+        const keyWord = action.payload.keyWord
+        for (const cat of draftState.dataset.tables) {
+          if (cat.category === category) {
+            const minorCategories = cat.minorCategories
+            for (const minorCat of minorCategories) {
+              if (name === minorCat.name) {
+                minorCat.legos = minorCat.legos.filter(
+                  (lego) => lego.keyWord !== keyWord
+                )
               }
             }
           }

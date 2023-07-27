@@ -1,5 +1,5 @@
 import { useActions } from "../../hooks/use-actions"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Collapse, CollapseProps, Button, Tooltip, Modal, Input } from "antd"
 import { useTypedSelector } from "../../hooks/use-typed-selector"
 
@@ -14,10 +14,11 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
     blocks: { dataset },
   } = useTypedSelector((state) => state)
 
-  const { insertBlockAfter, addNewBlock } = useActions()
+  const { insertBlockAfter, addNewBlock, deleteLego } = useActions()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [newBlockInfo, setNewBlockInfo] = useState({ keyword: "", detail: "" })
   const [currentMinor, setCurrentMinor] = useState(null) // Store the current minor
+  const timer = useRef(null)
 
   const showModal = (minorName) => {
     setCurrentMinor(minorName)
@@ -41,6 +42,25 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
 
   const handleCancel = () => {
     setIsModalVisible(false)
+  }
+
+  const handleClick = (block) => {
+    if (timer.current) {
+      clearTimeout(timer.current)
+      timer.current = null
+      return
+    }
+
+    timer.current = setTimeout(() => {
+      insertBlockAfter(selected.category, block.keyWord, block.detail)
+      timer.current = null
+    }, 250)
+  }
+
+  const handleDoubleClick = (minor, block) => {
+    clearTimeout(timer.current)
+    timer.current = null
+    deleteLego(selected.category, minor.name, block.keyWord)
   }
 
   const selected = dataset.tables?.find(
@@ -68,13 +88,8 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
             <Tooltip title={block.detail}>
               <Button
                 key={block.keyWord}
-                onClick={() => {
-                  insertBlockAfter(
-                    selected.category,
-                    block.keyWord,
-                    block.detail
-                  )
-                }}
+                onClick={() => handleClick(block)}
+                onDoubleClick={() => handleDoubleClick(minor, block)}
                 style={{
                   overflow: "hidden",
                   textOverflow: "ellipsis",

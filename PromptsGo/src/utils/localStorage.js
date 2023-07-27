@@ -2,11 +2,10 @@ export const loadState = () => {
   try {
     const serializedState = localStorage.getItem("state")
     if (serializedState === null) {
-      console.log("No state found in local storage")
       return undefined
     }
-    console.log("State loaded from local storage")
-    return JSON.parse(serializedState)
+    const persistedState = JSON.parse(serializedState)
+    return { blocks: { dataset: persistedState.dataset } }
   } catch (err) {
     return undefined
   }

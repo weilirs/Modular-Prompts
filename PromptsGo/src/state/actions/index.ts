@@ -35,6 +35,15 @@ export interface AddNewLegoAction {
   }
 }
 
+export interface DeleteLegoAction {
+  type: ActionType.DELETE_LEGO
+  payload: {
+    category: string
+    name: string
+    keyWord: string
+  }
+}
+
 export interface ClearAction {
   type: ActionType.CLEAR
 }
@@ -44,4 +53,5 @@ export type Action =
   | DeleteBlockAction
   | UpdateBlockAction
   | AddNewLegoAction
+  | DeleteLegoAction
   | ClearAction
