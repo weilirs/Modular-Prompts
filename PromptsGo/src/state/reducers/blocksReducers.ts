@@ -2,6 +2,12 @@ import { Action } from "../actions"
 import { ActionType } from "../action-types"
 import { Block } from "../block"
 import { produce } from "immer"
+import { data } from "../../data/data"
+import { loadState } from "../../utils/localStorage"
+
+const persistedState = loadState()
+
+const initialDataset = persistedState ? persistedState.dataset : data
 interface BlocksState {
   order: string[] // order of types
   data: { [key: string]: Block }
@@ -10,6 +16,7 @@ interface BlocksState {
   Mission: string[]
   output_requirement: string[]
   other_requirement: string[]
+  dataset: {}
 }
 
 const initialState: BlocksState = {
@@ -20,6 +27,7 @@ const initialState: BlocksState = {
   Mission: [],
   output_requirement: [],
   other_requirement: [],
+  dataset: initialDataset,
 }
 
 const reducer = (state = initialState, action: Action) => {
@@ -105,6 +113,28 @@ const reducer = (state = initialState, action: Action) => {
         draftState.data[action.payload.id].detail = action.payload.detail
       })
 
+    case ActionType.ADD_NEW_LEGO:
+      return produce(state, (draftState) => {
+        const category = action.payload.category
+        const name = action.payload.name
+        const newLego = {
+          keyWord: action.payload.keyWord,
+          detail: action.payload.detail,
+          useTime: 1,
+          color: "yellow",
+          varNum: 0,
+        }
+        for (const cat of draftState.dataset.tables) {
+          if (cat.category === category) {
+            const minorCategories = cat.minorCategories
+            for (const minorCat of minorCategories) {
+              if (name === minorCat.name) {
+                minorCat.legos.push(newLego)
+              }
+            }
+          }
+        }
+      })
     case ActionType.CLEAR:
       return produce(state, (draftState) => {
         // reset everything in the state

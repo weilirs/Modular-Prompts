@@ -1,8 +1,7 @@
 import { ActionType } from "../action-types"
-import { BlockTypes } from "../block"
 
 export const insertBlockAfter = (
-  blockType: BlockTypes,
+  blockType: string,
   content: string,
   detail: string
 ) => {
@@ -16,7 +15,7 @@ export const insertBlockAfter = (
   }
 }
 
-export const deleteBlock = (blockType: BlockTypes, id: string) => {
+export const deleteBlock = (blockType: string, id: string) => {
   return {
     type: ActionType.DELETE_BLOCK,
     payload: {
@@ -32,6 +31,23 @@ export const updateBlock = (id: string, detail: string) => {
     payload: {
       id: id,
       detail: detail,
+    },
+  }
+}
+
+export const addNewBlock = (
+  category: string,
+  name: string,
+  keyWord: string,
+  detail: string
+) => {
+  return {
+    type: ActionType.ADD_NEW_LEGO,
+    payload: {
+      category,
+      name,
+      keyWord,
+      detail,
     },
   }
 }

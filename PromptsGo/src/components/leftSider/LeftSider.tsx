@@ -63,11 +63,6 @@ const LeftSider: React.FC = () => {
     setApiKey(event.target.value)
   }
 
-  const handleSave = () => {
-    localStorage.setItem("apiKey", apiKey)
-    alert("API key saved!")
-  }
-
   const prompts = async () => {
     try {
       const response = await promptperfect(blocksText, "chatgpt", apiKey)
@@ -89,7 +84,6 @@ const LeftSider: React.FC = () => {
         value={apiKey}
         onChange={handleInputChange}
       />
-      <Button onClick={handleSave}>Save API Key</Button>
       <OptimizedText optimizedText={optimizedText} />
     </>
   )
