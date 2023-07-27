@@ -22,9 +22,7 @@ const LeftSider: React.FC = () => {
       dataset,
     },
   } = useTypedSelector((state) => state)
-  console.log(order)
-  console.log(data)
-  console.log(dataset)
+
   const [blockCollectionState, setblockCollectionState] = useState([])
 
   useEffect(() => {

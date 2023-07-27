@@ -14,15 +14,38 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
     blocks: { dataset },
   } = useTypedSelector((state) => state)
 
-  const { insertBlockAfter, addNewBlock, deleteLego } = useActions()
+  const {
+    insertBlockAfter,
+    addNewBlock,
+    deleteLego,
+    addMinorCategory,
+    deleteMinorCategory,
+  } = useActions()
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isMinorModalVisible, setIsMinorModalVisible] = useState(false)
   const [newBlockInfo, setNewBlockInfo] = useState({ keyword: "", detail: "" })
+  const [newMinorInfo, setNewMinorInfo] = useState({ name: "" })
   const [currentMinor, setCurrentMinor] = useState(null) // Store the current minor
   const timer = useRef(null)
 
   const showModal = (minorName) => {
     setCurrentMinor(minorName)
     setIsModalVisible(true)
+  }
+
+  const showMinorModal = () => {
+    setIsMinorModalVisible(true)
+  }
+
+  const handleMinorOk = () => {
+    if (newMinorInfo.name) {
+      addMinorCategory(selected.category, newMinorInfo.name)
+    }
+    setIsMinorModalVisible(false)
+  }
+
+  const handleMinorCancel = () => {
+    setIsMinorModalVisible(false)
   }
 
   const handleOk = () => {
@@ -63,6 +86,10 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
     deleteLego(selected.category, minor.name, block.keyWord)
   }
 
+  const handleMinorDoubleClick = (minorName) => {
+    deleteMinorCategory(selected.category, minorName)
+  }
+
   const selected = dataset.tables?.find(
     (block) => block.category === selectedButton
   )
@@ -71,6 +98,7 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
     (minor) => ({
       label: (
         <div
+          onDoubleClick={() => handleMinorDoubleClick(minor.name)}
           style={{
             display: "flex",
             alignItems: "center",
@@ -130,6 +158,21 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
           }
         />
       </Modal>
+      <Modal
+        title="Add Minor Category"
+        visible={isMinorModalVisible}
+        onOk={handleMinorOk}
+        onCancel={handleMinorCancel}
+      >
+        <Input
+          placeholder="Category's Name"
+          value={newMinorInfo.name}
+          onChange={(e) =>
+            setNewMinorInfo((info) => ({ ...info, name: e.target.value }))
+          }
+        />
+      </Modal>
+      <Button onClick={showMinorModal}>Add Minor Category</Button>
     </div>
   )
 }

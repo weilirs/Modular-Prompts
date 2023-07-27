@@ -5,4 +5,6 @@ export enum ActionType {
   CLEAR = "clear",
   ADD_NEW_LEGO = "add_new_lego",
   DELETE_LEGO = "delete_lego",
+  ADD_MINOR_CATEGORY = "add_minor_category",
+  DELETE_MINOR_CATEGORY = "delete_minor_category",
 }

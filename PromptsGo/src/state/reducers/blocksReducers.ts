@@ -153,6 +153,34 @@ const reducer = (state = initialState, action: Action) => {
           }
         }
       })
+
+    case ActionType.ADD_MINOR_CATEGORY:
+      return produce(state, (draftState) => {
+        const category = action.payload.category
+        const name = action.payload.name
+        for (const cat of draftState.dataset.tables) {
+          if (cat.category === category) {
+            cat.minorCategories.push({
+              name: name,
+              number: 0,
+              legos: [],
+            })
+          }
+        }
+      })
+
+    case ActionType.DELETE_MINOR_CATEGORY:
+      return produce(state, (draftState) => {
+        const category = action.payload.category
+        const name = action.payload.name
+        for (const cat of draftState.dataset.tables) {
+          if (cat.category === category) {
+            cat.minorCategories = cat.minorCategories.filter(
+              (minorCat) => minorCat.name !== name
+            )
+          }
+        }
+      })
     case ActionType.CLEAR:
       return produce(state, (draftState) => {
         // reset everything in the state

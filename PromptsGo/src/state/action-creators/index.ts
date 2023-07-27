@@ -63,6 +63,25 @@ export const deleteLego = (category: string, name: string, keyWord: string) => {
   }
 }
 
+export const addMinorCategory = (category: string, name: string) => {
+  return {
+    type: ActionType.ADD_MINOR_CATEGORY,
+    payload: {
+      category,
+      name,
+    },
+  }
+}
+
+export const deleteMinorCategory = (category: string, name: string) => {
+  return {
+    type: ActionType.DELETE_MINOR_CATEGORY,
+    payload: {
+      category,
+      name,
+    },
+  }
+}
 export const clear = () => {
   return {
     type: ActionType.CLEAR,
