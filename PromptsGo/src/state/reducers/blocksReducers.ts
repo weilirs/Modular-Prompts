@@ -6,7 +6,13 @@ import { data } from "../../data/data"
 import { loadState } from "../../utils/localStorage"
 
 const persistedState = loadState()
-
+const newCategories = {}
+if (persistedState) {
+  for (let i = 6; i < persistedState.blocks.dataset.tables.length; i++) {
+    newCategories[persistedState.blocks.dataset.tables[i].category] = []
+  }
+}
+console.log(newCategories)
 interface BlocksState {
   order: string[] // order of types
   data: { [key: string]: Block }
@@ -16,6 +22,7 @@ interface BlocksState {
   output_requirement: string[]
   other_requirement: string[]
   dataset: {}
+  new_categories: {}
 }
 
 const initialState: BlocksState = {
@@ -27,6 +34,7 @@ const initialState: BlocksState = {
   output_requirement: [],
   other_requirement: [],
   dataset: persistedState ? persistedState.blocks.dataset : data,
+  new_categories: newCategories,
 }
 
 const reducer = (state = initialState, action: Action) => {
@@ -57,6 +65,13 @@ const reducer = (state = initialState, action: Action) => {
           case "other_requirement":
             draftState.other_requirement.push(newBlock.id)
             break
+
+          default:
+            Object.keys(draftState.new_categories).forEach((category) => {
+              if (category === action.payload.type) {
+                draftState.new_categories[category].push(newBlock.id)
+              }
+            })
         }
 
         draftState.data[newBlock.id] = newBlock
@@ -95,12 +110,27 @@ const reducer = (state = initialState, action: Action) => {
               (id) => id !== action.payload.id
             )
             break
+
+          default:
+            Object.keys(draftState.new_categories).forEach((category) => {
+              if (category === action.payload.type) {
+                draftState.new_categories[category] = draftState.new_categories[
+                  category
+                ].filter((id) => id !== action.payload.id)
+              }
+            })
         }
 
         delete draftState.data[action.payload.id]
 
         // if the type array is empty, delete it from the order array
-        if (draftState[action.payload.type].length === 0) {
+        if (draftState.new_categories[action.payload.type] !== undefined) {
+          if (draftState.new_categories[action.payload.type].length === 0) {
+            draftState.order = draftState.order.filter(
+              (type) => type !== action.payload.type
+            )
+          }
+        } else if (draftState[action.payload.type].length === 0) {
           draftState.order = draftState.order.filter(
             (type) => type !== action.payload.type
           )
@@ -180,6 +210,16 @@ const reducer = (state = initialState, action: Action) => {
             )
           }
         }
+      })
+
+    case ActionType.ADD_NEW_CATEGORY:
+      return produce(state, (draftState) => {
+        const category = action.payload.category
+        draftState.dataset.tables.push({
+          category: category,
+          minorCategories: [],
+        })
+        draftState.new_categories[category] = []
       })
     case ActionType.CLEAR:
       return produce(state, (draftState) => {

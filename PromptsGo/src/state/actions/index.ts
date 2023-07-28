@@ -59,6 +59,20 @@ export interface DeleteMinorCategoryAction {
     name: string
   }
 }
+
+export interface AddNewCategoryAction {
+  type: ActionType.ADD_NEW_CATEGORY
+  payload: {
+    category: string
+  }
+}
+
+export interface DeleteNewCategoryAction {
+  type: ActionType.DELETE_NEW_CATEGORY
+  payload: {
+    category: string
+  }
+}
 export interface ClearAction {
   type: ActionType.CLEAR
 }
@@ -71,4 +85,6 @@ export type Action =
   | DeleteLegoAction
   | AddMinorCategoryAction
   | DeleteMinorCategoryAction
+  | AddNewCategoryAction
+  | DeleteNewCategoryAction
   | ClearAction

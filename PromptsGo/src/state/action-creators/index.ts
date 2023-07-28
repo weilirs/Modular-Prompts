@@ -82,6 +82,24 @@ export const deleteMinorCategory = (category: string, name: string) => {
     },
   }
 }
+
+export const addNewCategory = (category: string) => {
+  return {
+    type: ActionType.ADD_NEW_CATEGORY,
+    payload: {
+      category,
+    },
+  }
+}
+
+export const deleteNewCategory = (category: string) => {
+  return {
+    type: ActionType.DELETE_NEW_CATEGORY,
+    payload: {
+      category,
+    },
+  }
+}
 export const clear = () => {
   return {
     type: ActionType.CLEAR,

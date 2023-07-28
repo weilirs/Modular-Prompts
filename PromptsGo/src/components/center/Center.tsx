@@ -16,6 +16,7 @@ const Center: React.FC = () => {
       Mission,
       output_requirement,
       other_requirement,
+      new_categories,
     },
   } = useTypedSelector((state) => state)
 
@@ -32,6 +33,8 @@ const Center: React.FC = () => {
         collection.push(...output_requirement)
       else if (order[i] === "other_requirement")
         collection.push(...other_requirement)
+      else if (order[i] in new_categories)
+        collection.push(...new_categories[order[i]])
     }
     setCollectionState(collection)
 
@@ -45,6 +48,7 @@ const Center: React.FC = () => {
     Mission,
     output_requirement,
     other_requirement,
+    new_categories,
   ])
 
   const renderedBlocks = blockCollectionState.map((block) => (

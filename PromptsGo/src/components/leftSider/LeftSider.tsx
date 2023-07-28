@@ -19,7 +19,7 @@ const LeftSider: React.FC = () => {
       Mission,
       output_requirement,
       other_requirement,
-      dataset,
+      new_categories,
     },
   } = useTypedSelector((state) => state)
 
@@ -35,6 +35,8 @@ const LeftSider: React.FC = () => {
         collection.push(...output_requirement)
       else if (order[i] === "other_requirement")
         collection.push(...other_requirement)
+      else if (order[i] in new_categories)
+        collection.push(...new_categories[order[i]])
     }
     setblockCollectionState(collection.map((id) => data[id]))
   }, [
@@ -45,6 +47,7 @@ const LeftSider: React.FC = () => {
     Mission,
     output_requirement,
     other_requirement,
+    new_categories,
   ])
 
   const blocksText = blockCollectionState

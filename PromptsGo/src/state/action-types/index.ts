@@ -7,4 +7,6 @@ export enum ActionType {
   DELETE_LEGO = "delete_lego",
   ADD_MINOR_CATEGORY = "add_minor_category",
   DELETE_MINOR_CATEGORY = "delete_minor_category",
+  ADD_NEW_CATEGORY = "add_new_category",
+  DELETE_NEW_CATEGORY = "delete_new_category",
 }

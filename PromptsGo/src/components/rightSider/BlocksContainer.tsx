@@ -28,11 +28,6 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
   const [currentMinor, setCurrentMinor] = useState(null) // Store the current minor
   const timer = useRef(null)
 
-  const showModal = (minorName) => {
-    setCurrentMinor(minorName)
-    setIsModalVisible(true)
-  }
-
   const showMinorModal = () => {
     setIsMinorModalVisible(true)
   }
@@ -40,12 +35,18 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
   const handleMinorOk = () => {
     if (newMinorInfo.name) {
       addMinorCategory(selected.category, newMinorInfo.name)
+      setNewMinorInfo({ name: "" })
     }
     setIsMinorModalVisible(false)
   }
 
   const handleMinorCancel = () => {
     setIsMinorModalVisible(false)
+  }
+
+  const showModal = (minorName) => {
+    setCurrentMinor(minorName)
+    setIsModalVisible(true)
   }
 
   const handleOk = () => {
@@ -57,6 +58,7 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
           newBlockInfo.keyword,
           newBlockInfo.detail
         )
+        setNewBlockInfo({ keyword: "", detail: "" })
       }
     }
 
@@ -165,7 +167,7 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
         onCancel={handleMinorCancel}
       >
         <Input
-          placeholder="Category's Name"
+          placeholder="Minor Category's Name"
           value={newMinorInfo.name}
           onChange={(e) =>
             setNewMinorInfo((info) => ({ ...info, name: e.target.value }))
