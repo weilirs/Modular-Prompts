@@ -11,16 +11,7 @@ const LeftSider: React.FC = () => {
 
   const { clear } = useActions()
   const {
-    blocks: {
-      order,
-      data,
-      Background,
-      Character,
-      Mission,
-      output_requirement,
-      other_requirement,
-      new_categories,
-    },
+    blocks: { order, data, categories },
   } = useTypedSelector((state) => state)
 
   const [blockCollectionState, setblockCollectionState] = useState([])
@@ -28,30 +19,14 @@ const LeftSider: React.FC = () => {
   useEffect(() => {
     const collection = []
     for (let i = 0; i < order.length; i++) {
-      if (order[i] === "Background") collection.push(...Background)
-      else if (order[i] === "Character") collection.push(...Character)
-      else if (order[i] === "Mission") collection.push(...Mission)
-      else if (order[i] === "output_requirement")
-        collection.push(...output_requirement)
-      else if (order[i] === "other_requirement")
-        collection.push(...other_requirement)
-      else if (order[i] in new_categories)
-        collection.push(...new_categories[order[i]])
+      const elements = categories.get(order[i])
+      collection.push(...elements)
     }
     setblockCollectionState(collection.map((id) => data[id]))
-  }, [
-    order,
-    data,
-    Background,
-    Character,
-    Mission,
-    output_requirement,
-    other_requirement,
-    new_categories,
-  ])
+  }, [order, data, categories])
 
   const blocksText = blockCollectionState
-    .map((block) => `${block.type}: ${block.detail}`)
+    .map((block) => `${block.category}: ${block.detail}`)
     .join("\n")
 
   const copyToClipboard = async (text: string) => {

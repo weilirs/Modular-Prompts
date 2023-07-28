@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react"
 import { Collapse, CollapseProps, Button, Tooltip, Modal, Input } from "antd"
 import { useTypedSelector } from "../../hooks/use-typed-selector"
 
+// TODO: `ADD NEW CATEGORY` should be a pure button
 interface BlocksContainerProps {
   selectedButton: string
 }

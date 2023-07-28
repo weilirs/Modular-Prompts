@@ -1,26 +1,26 @@
 import { ActionType } from "../action-types"
 
 export const insertBlockAfter = (
-  blockType: string,
-  content: string,
+  category: string,
+  keyWord: string,
   detail: string
 ) => {
   return {
     type: ActionType.INSERT_BLOCK_AFTER,
     payload: {
-      type: blockType,
-      content: content,
-      detail: detail,
+      category,
+      keyWord,
+      detail,
     },
   }
 }
 
-export const deleteBlock = (blockType: string, id: string) => {
+export const deleteBlock = (category: string, id: string) => {
   return {
     type: ActionType.DELETE_BLOCK,
     payload: {
-      type: blockType,
-      id: id,
+      category,
+      id,
     },
   }
 }
@@ -92,9 +92,9 @@ export const addNewCategory = (category: string) => {
   }
 }
 
-export const deleteNewCategory = (category: string) => {
+export const deleteCategory = (category: string) => {
   return {
-    type: ActionType.DELETE_NEW_CATEGORY,
+    type: ActionType.DELETE_CATEGORY,
     payload: {
       category,
     },

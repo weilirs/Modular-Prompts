@@ -3,8 +3,8 @@ import { ActionType } from "../action-types"
 export interface InsertBlockAfterAction {
   type: ActionType.INSERT_BLOCK_AFTER
   payload: {
-    type: string
-    content: string
+    category: string
+    keyWord: string
     detail: string
   }
 }
@@ -12,7 +12,7 @@ export interface InsertBlockAfterAction {
 export interface DeleteBlockAction {
   type: ActionType.DELETE_BLOCK
   payload: {
-    type: string
+    category: string
     id: string
   }
 }
@@ -67,8 +67,8 @@ export interface AddNewCategoryAction {
   }
 }
 
-export interface DeleteNewCategoryAction {
-  type: ActionType.DELETE_NEW_CATEGORY
+export interface DeleteCategoryAction {
+  type: ActionType.DELETE_CATEGORY
   payload: {
     category: string
   }
@@ -86,5 +86,5 @@ export type Action =
   | AddMinorCategoryAction
   | DeleteMinorCategoryAction
   | AddNewCategoryAction
-  | DeleteNewCategoryAction
+  | DeleteCategoryAction
   | ClearAction

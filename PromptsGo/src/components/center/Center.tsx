@@ -8,16 +8,7 @@ const Center: React.FC = () => {
 
   // retrieve the state from redux store
   const {
-    blocks: {
-      order,
-      data,
-      Background,
-      Character,
-      Mission,
-      output_requirement,
-      other_requirement,
-      new_categories,
-    },
+    blocks: { order, data, categories },
   } = useTypedSelector((state) => state)
 
   const [collectionState, setCollectionState] = useState([])
@@ -26,39 +17,23 @@ const Center: React.FC = () => {
   useEffect(() => {
     const collection = []
     for (let i = 0; i < order.length; i++) {
-      if (order[i] === "Background") collection.push(...Background)
-      else if (order[i] === "Character") collection.push(...Character)
-      else if (order[i] === "Mission") collection.push(...Mission)
-      else if (order[i] === "output_requirement")
-        collection.push(...output_requirement)
-      else if (order[i] === "other_requirement")
-        collection.push(...other_requirement)
-      else if (order[i] in new_categories)
-        collection.push(...new_categories[order[i]])
+      const elements = categories.get(order[i])
+      collection.push(...elements)
     }
     setCollectionState(collection)
 
     const blockCollection = collection.map((id) => data[id])
     setblockCollectionState(blockCollection)
-  }, [
-    order,
-    data,
-    Background,
-    Character,
-    Mission,
-    output_requirement,
-    other_requirement,
-    new_categories,
-  ])
+  }, [order, data, categories])
 
   const renderedBlocks = blockCollectionState.map((block) => (
     <Input
       className="mb-4"
-      placeholder={block.content}
+      placeholder={block.keyWord}
       value={block.detail}
       onChange={(e) => updateBlock(block.id, e.target.value)}
       onDoubleClick={() => {
-        deleteBlock(block.type, block.id)
+        deleteBlock(block.category, block.id)
       }}
     />
   ))

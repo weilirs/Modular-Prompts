@@ -10,52 +10,21 @@ type NavigatorProps = {
 
 const Navigator: React.FC<NavigatorProps> = ({ setSelectedButton }) => {
   const {
-    blocks: { new_categories },
+    blocks: { categories },
   } = useTypedSelector((state) => state)
 
-  const { addNewCategory } = useActions()
+  const { addNewCategory, deleteCategory } = useActions()
   const [isModalVisible, setIsModalVisible] = useState(false)
 
   const [newCategoryInfo, setNewCategoryInfo] = useState({ category: "" })
-  const items: MenuProps["items"] = [
-    {
-      label: "Collection",
-      key: "Collection",
-      onClick: () => setSelectedButton("Collection"),
-    },
-    {
-      label: "Background",
-      key: "Background",
-      onClick: () => setSelectedButton("Background"),
-    },
-    {
-      label: "Mission",
-      key: "Mission",
-      onClick: () => setSelectedButton("Mission"),
-    },
-    {
-      label: "Character",
-      key: "Character",
-      onClick: () => setSelectedButton("Character"),
-    },
-    {
-      label: "output_requirement",
-      key: "output_requirement",
-      onClick: () => setSelectedButton("output_requirement"),
-    },
-    {
-      label: "other_requirement",
-      key: "other_requirement",
-      onClick: () => setSelectedButton("other_requirement"),
-    },
-  ]
+  const items: MenuProps["items"] = []
 
   // Iterate over keys of new_categories object
-  Object.keys(new_categories).forEach((category) => {
+  categories.forEach((value, cat) => {
     items.push({
-      label: category,
-      key: category,
-      onClick: () => setSelectedButton(category),
+      label: cat,
+      key: cat,
+      onClick: () => setSelectedButton(cat),
     })
   })
 
@@ -92,14 +61,25 @@ const Navigator: React.FC<NavigatorProps> = ({ setSelectedButton }) => {
     setCurrent(e.key)
     setSelectedButton(e.key)
   }
+
+  const onDoubleClick = (key: string) => {
+    console.log("double click" + key)
+    deleteCategory(key)
+  }
+
   return (
     <div>
-      <Menu
-        mode="horizontal"
-        items={items}
-        onClick={onClick}
-        selectedKeys={[current]}
-      />
+      <Menu mode="horizontal" onClick={onClick} selectedKeys={[current]}>
+        {items.map((item) => (
+          <Menu.Item
+            key={item.key}
+            onDoubleClick={() => onDoubleClick(item.key)}
+          >
+            {item.label}
+          </Menu.Item>
+        ))}
+      </Menu>
+
       <Modal
         title="Add New Category"
         visible={isModalVisible}
