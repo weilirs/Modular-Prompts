@@ -9,4 +9,5 @@ export enum ActionType {
   DELETE_MINOR_CATEGORY = "delete_minor_category",
   ADD_NEW_CATEGORY = "add_new_category",
   DELETE_CATEGORY = "delete_category",
+  COLLECT = "collect",
 }

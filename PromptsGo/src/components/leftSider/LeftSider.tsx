@@ -9,7 +9,7 @@ const LeftSider: React.FC = () => {
   const [optimizedText, setOptimizedText] = useState("")
   const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "")
 
-  const { clear } = useActions()
+  const { clear, collect } = useActions()
   const {
     blocks: { order, data, categories },
   } = useTypedSelector((state) => state)
@@ -52,9 +52,13 @@ const LeftSider: React.FC = () => {
     }
   }
 
+  const collecting = () => {
+    collect(blockCollectionState)
+  }
   return (
     <>
       <OriginalText blocksText={blocksText} />
+      <Button onClick={() => collecting()}>Collect</Button>
       <Button onClick={() => copyToClipboard(blocksText)}>Copy All</Button>
       <Button onClick={() => clear()}>Clear All</Button>
       <Button onClick={() => prompts()}>Optimize</Button>

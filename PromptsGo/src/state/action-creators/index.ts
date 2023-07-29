@@ -105,3 +105,12 @@ export const clear = () => {
     type: ActionType.CLEAR,
   }
 }
+
+export const collect = (legos: []) => {
+  return {
+    type: ActionType.COLLECT,
+    payload: {
+      legos,
+    },
+  }
+}

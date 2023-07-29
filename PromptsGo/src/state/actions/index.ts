@@ -77,6 +77,12 @@ export interface ClearAction {
   type: ActionType.CLEAR
 }
 
+export interface CollectAction {
+  type: ActionType.COLLECT
+  payload: {
+    legos: []
+  }
+}
 export type Action =
   | InsertBlockAfterAction
   | DeleteBlockAction
@@ -88,3 +94,4 @@ export type Action =
   | AddNewCategoryAction
   | DeleteCategoryAction
   | ClearAction
+  | CollectAction

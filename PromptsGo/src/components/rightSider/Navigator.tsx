@@ -63,7 +63,6 @@ const Navigator: React.FC<NavigatorProps> = ({ setSelectedButton }) => {
   }
 
   const onDoubleClick = (key: string) => {
-    console.log("double click" + key)
     deleteCategory(key)
   }
 

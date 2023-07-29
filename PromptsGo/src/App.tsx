@@ -3,9 +3,17 @@ import Center from "./components/center/Center"
 import LeftSider from "./components/leftSider/leftSider"
 import { Provider } from "react-redux"
 import { store } from "./state"
-import { Col, Row } from "antd"
+import { Col, Row, Tour } from "antd"
+import { useState } from "react"
 
-const App = () => {
+const App: React.FC = () => {
+  const [open, setOpen] = useState<boolean>(true)
+  const steps: TourProps["steps"] = [
+    {
+      title: "Double Click to Delete",
+      description: "All modulars can be deleted by double clicking",
+    },
+  ]
   return (
     <Provider store={store}>
       <Row>
@@ -21,6 +29,7 @@ const App = () => {
           <RightSider />
         </Col>
       </Row>
+      <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
     </Provider>
   )
 }

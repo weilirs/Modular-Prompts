@@ -179,11 +179,38 @@ const reducer = (state = initialState, action: Action) => {
         // reset everything in the state
         draftState.order = []
         draftState.data = {}
-        draftState.Background = []
-        draftState.Character = []
-        draftState.Mission = []
-        draftState.output_requirement = []
-        draftState.other_requirement = []
+
+        draftState.categories.forEach((value, category) => {
+          draftState.categories.set(category, [])
+        })
+      })
+
+    case ActionType.COLLECT:
+      return produce(state, (draftState) => {
+        const legoCollections = action.payload.legos
+        if (draftState.categories.has("Collections")) {
+          for (const cat of draftState.dataset.tables) {
+            if (cat.category === "Collections") {
+              cat.minorCategories.push({
+                name: `Untitled${cat.minorCategories.length + 1}`,
+                number: 0,
+                legos: legoCollections,
+              })
+            }
+          }
+        } else {
+          draftState.dataset.tables.push({
+            category: "Collections",
+            minorCategories: [
+              {
+                name: `Untitled1`,
+                number: 0,
+                legos: legoCollections,
+              },
+            ],
+          })
+          draftState.categories.set("Collections", [])
+        }
       })
 
     default:
