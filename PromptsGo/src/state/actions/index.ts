@@ -81,6 +81,7 @@ export interface CollectAction {
   type: ActionType.COLLECT
   payload: {
     legos: []
+    collectionName: string
   }
 }
 export type Action =

@@ -106,11 +106,12 @@ export const clear = () => {
   }
 }
 
-export const collect = (legos: []) => {
+export const collect = (legos: [], collectionName: string) => {
   return {
     type: ActionType.COLLECT,
     payload: {
       legos,
+      collectionName,
     },
   }
 }

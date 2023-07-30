@@ -188,11 +188,12 @@ const reducer = (state = initialState, action: Action) => {
     case ActionType.COLLECT:
       return produce(state, (draftState) => {
         const legoCollections = action.payload.legos
+        const collectionName = action.payload.collectionName
         if (draftState.categories.has("Collections")) {
           for (const cat of draftState.dataset.tables) {
             if (cat.category === "Collections") {
               cat.minorCategories.push({
-                name: `Untitled${cat.minorCategories.length + 1}`,
+                name: collectionName,
                 number: 0,
                 legos: legoCollections,
               })
@@ -203,7 +204,7 @@ const reducer = (state = initialState, action: Action) => {
             category: "Collections",
             minorCategories: [
               {
-                name: `Untitled1`,
+                name: collectionName,
                 number: 0,
                 legos: legoCollections,
               },

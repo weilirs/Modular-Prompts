@@ -35,6 +35,7 @@ const Navigator: React.FC<NavigatorProps> = ({ setSelectedButton }) => {
   const handleOk = () => {
     if (newCategoryInfo.category) {
       addNewCategory(newCategoryInfo.category)
+      setNewCategoryInfo({ category: "" })
     }
     setIsModalVisible(false)
   }
@@ -46,9 +47,6 @@ const Navigator: React.FC<NavigatorProps> = ({ setSelectedButton }) => {
   const addNewCategoryButton = {
     label: "Add New Category",
     key: "Add New Category",
-    onClick: () => {
-      showModal()
-    },
   }
   items.push(addNewCategoryButton)
   const [current, setCurrent] = useState("Background")
@@ -60,6 +58,9 @@ const Navigator: React.FC<NavigatorProps> = ({ setSelectedButton }) => {
   const onClick: MenuProps["onClick"] = (e) => {
     setCurrent(e.key)
     setSelectedButton(e.key)
+    if (e.key === "Add New Category") {
+      showModal()
+    }
   }
 
   const onDoubleClick = (key: string) => {

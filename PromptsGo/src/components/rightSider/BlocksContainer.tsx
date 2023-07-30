@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from "react"
 import { Collapse, CollapseProps, Button, Tooltip, Modal, Input } from "antd"
 import { useTypedSelector } from "../../hooks/use-typed-selector"
 
-// TODO: `ADD NEW CATEGORY` should be a pure button
 interface BlocksContainerProps {
   selectedButton: string
 }
@@ -138,45 +137,47 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
     })
   )
   return (
-    <div className="flex flex-col gap-4 border border-blue-800 overflow-auto">
-      <Collapse items={items} ghost={true} />
-      <Modal
-        title="Add Block"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <Input
-          placeholder="Block Keyword"
-          value={newBlockInfo.keyword}
-          onChange={(e) =>
-            setNewBlockInfo((info) => ({ ...info, keyword: e.target.value }))
-          }
-        />
-        <Input
-          placeholder="Block Detail"
-          value={newBlockInfo.detail}
-          onChange={(e) =>
-            setNewBlockInfo((info) => ({ ...info, detail: e.target.value }))
-          }
-        />
-      </Modal>
-      <Modal
-        title="Add Minor Category"
-        visible={isMinorModalVisible}
-        onOk={handleMinorOk}
-        onCancel={handleMinorCancel}
-      >
-        <Input
-          placeholder="Minor Category's Name"
-          value={newMinorInfo.name}
-          onChange={(e) =>
-            setNewMinorInfo((info) => ({ ...info, name: e.target.value }))
-          }
-        />
-      </Modal>
-      <Button onClick={showMinorModal}>Add Minor Category</Button>
-    </div>
+    (selectedButton !== "Add New Category" && (
+      <div className="flex flex-col gap-4 border border-blue-800 overflow-auto">
+        <Collapse items={items} ghost={true} />
+        <Modal
+          title="Add Block"
+          visible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <Input
+            placeholder="Block Keyword"
+            value={newBlockInfo.keyword}
+            onChange={(e) =>
+              setNewBlockInfo((info) => ({ ...info, keyword: e.target.value }))
+            }
+          />
+          <Input
+            placeholder="Block Detail"
+            value={newBlockInfo.detail}
+            onChange={(e) =>
+              setNewBlockInfo((info) => ({ ...info, detail: e.target.value }))
+            }
+          />
+        </Modal>
+        <Modal
+          title="Add Minor Category"
+          visible={isMinorModalVisible}
+          onOk={handleMinorOk}
+          onCancel={handleMinorCancel}
+        >
+          <Input
+            placeholder="Minor Category's Name"
+            value={newMinorInfo.name}
+            onChange={(e) =>
+              setNewMinorInfo((info) => ({ ...info, name: e.target.value }))
+            }
+          />
+        </Modal>
+        <Button onClick={showMinorModal}>Add Minor Category</Button>
+      </div>
+    )) || <div></div>
   )
 }
 

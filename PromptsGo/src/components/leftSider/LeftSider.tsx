@@ -1,12 +1,15 @@
 import { useTypedSelector } from "../../hooks/use-typed-selector"
 import { useEffect, useState } from "react"
 import { useActions } from "../../hooks/use-actions"
-import { Button, Input } from "antd"
+import { Button, Input, Modal } from "antd"
 import OriginalText from "./OriginalText"
 import promptperfect from "./PromptsPerfect"
 import OptimizedText from "./OptimizedText"
 const LeftSider: React.FC = () => {
   const [optimizedText, setOptimizedText] = useState("")
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [newInfo, setNewInfo] = useState({ collectionName: "" })
+
   const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "")
 
   const { clear, collect } = useActions()
@@ -26,7 +29,11 @@ const LeftSider: React.FC = () => {
   }, [order, data, categories])
 
   const blocksText = blockCollectionState
-    .map((block) => `${block.category}: ${block.detail}`)
+    .map((block) =>
+      block.category !== "Collections"
+        ? `${block.category}: ${block.detail}`
+        : block.detail
+    )
     .join("\n")
 
   const copyToClipboard = async (text: string) => {
@@ -52,13 +59,39 @@ const LeftSider: React.FC = () => {
     }
   }
 
-  const collecting = () => {
-    collect(blockCollectionState)
+  const showModal = () => {
+    setIsModalVisible(true)
+  }
+
+  const handleOk = () => {
+    if (newInfo.collectionName) {
+      collect(blockCollectionState, newInfo.collectionName)
+      setNewInfo({ collectionName: "" })
+    }
+    setIsModalVisible(false)
+  }
+
+  const handleCancel = () => {
+    setIsModalVisible(false)
   }
   return (
     <>
       <OriginalText blocksText={blocksText} />
-      <Button onClick={() => collecting()}>Collect</Button>
+      <Modal
+        title="Add New Collection"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <Input
+          placeholder="Collection's Name"
+          value={newInfo.collectionName}
+          onChange={(e) =>
+            setNewInfo((info) => ({ ...info, collectionName: e.target.value }))
+          }
+        />
+      </Modal>
+      <Button onClick={showModal}>Collect</Button>
       <Button onClick={() => copyToClipboard(blocksText)}>Copy All</Button>
       <Button onClick={() => clear()}>Clear All</Button>
       <Button onClick={() => prompts()}>Optimize</Button>
