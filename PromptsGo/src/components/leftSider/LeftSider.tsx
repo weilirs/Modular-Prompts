@@ -75,33 +75,51 @@ const LeftSider: React.FC = () => {
     setIsModalVisible(false)
   }
   return (
-    <>
+    <div className="ml-2">
       <OriginalText blocksText={blocksText} />
-      <Modal
-        title="Add New Collection"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <Input
-          placeholder="Collection's Name"
-          value={newInfo.collectionName}
-          onChange={(e) =>
-            setNewInfo((info) => ({ ...info, collectionName: e.target.value }))
-          }
-        />
-      </Modal>
-      <Button onClick={showModal}>Collect</Button>
-      <Button onClick={() => copyToClipboard(blocksText)}>Copy All</Button>
-      <Button onClick={() => clear()}>Clear All</Button>
-      <Button onClick={() => prompts()}>Optimize</Button>
-      <Input
-        placeholder={"Enter API Key for Optimized Prompts"}
-        value={apiKey}
-        onChange={handleInputChange}
-      />
+      <div className="mt-2">
+        <Modal
+          title="Add New Collection"
+          visible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <Input
+            placeholder="Collection's Name"
+            value={newInfo.collectionName}
+            onChange={(e) =>
+              setNewInfo((info) => ({
+                ...info,
+                collectionName: e.target.value,
+              }))
+            }
+          />
+        </Modal>
+        <div className="mb-2">
+          <div className="flex justify-around mb-2 border-b pb-2">
+            <Button onClick={showModal}>Collect</Button>
+            <Button onClick={() => copyToClipboard(blocksText)}>
+              Copy Original
+            </Button>
+            <Button onClick={() => clear()}>Clear All</Button>
+          </div>
+          <div className="flex justify-around">
+            <Button onClick={() => prompts()}>Optimize</Button>
+            <Button onClick={() => copyToClipboard(optimizedText)}>
+              Copy Optimized
+            </Button>
+          </div>
+        </div>
+        <div className="mb-2">
+          <Input.Password
+            placeholder={`Enter "PromptPerfect" API Key for Optimized Prompts`}
+            value={apiKey}
+            onChange={handleInputChange}
+          />
+        </div>
+      </div>
       <OptimizedText optimizedText={optimizedText} />
-    </>
+    </div>
   )
 }
 

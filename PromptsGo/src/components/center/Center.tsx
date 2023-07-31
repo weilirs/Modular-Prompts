@@ -39,8 +39,8 @@ const Center: React.FC = () => {
   ))
 
   return (
-    <div className="border-4 border-black p-4">
-      <div className="flex flex-col ">{renderedBlocks}</div>
+    <div className="border-l border-r m-2 h-screen">
+      <div className="m-2">{renderedBlocks}</div>
     </div>
   )
 }

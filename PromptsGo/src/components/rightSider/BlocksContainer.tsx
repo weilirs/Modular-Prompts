@@ -138,7 +138,7 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
   )
   return (
     (selectedButton !== "Add New Category" && (
-      <div className="flex flex-col gap-4 border border-blue-800 overflow-auto">
+      <div className="flex flex-col gap-4 border rounded-bl overflow-auto">
         <Collapse items={items} ghost={true} />
         <Modal
           title="Add Block"
@@ -175,7 +175,9 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
             }
           />
         </Modal>
-        <Button onClick={showMinorModal}>Add Minor Category</Button>
+        <Button onClick={showMinorModal} className="m-4">
+          Add Minor Category
+        </Button>
       </div>
     )) || <div></div>
   )

@@ -4,9 +4,9 @@ const OriginalText: React.FC<{ blocksText: string }> = ({ blocksText }) => {
   })
 
   return (
-    <>
+    <div className="border-b pb-2">
       <ul>{blockslist}</ul>
-    </>
+    </div>
   )
 }
 

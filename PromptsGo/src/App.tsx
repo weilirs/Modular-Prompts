@@ -15,22 +15,24 @@ const App: React.FC = () => {
     },
   ]
   return (
-    <Provider store={store}>
-      <Row>
-        <Col span={8}>
-          <LeftSider />
-        </Col>
+    <div className="border-t pt-4">
+      <Provider store={store}>
+        <Row>
+          <Col span={8}>
+            <LeftSider />
+          </Col>
 
-        <Col span={6}>
-          <Center />
-        </Col>
+          <Col span={6}>
+            <Center />
+          </Col>
 
-        <Col span={10}>
-          <RightSider />
-        </Col>
-      </Row>
-      <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
-    </Provider>
+          <Col span={10}>
+            <RightSider />
+          </Col>
+        </Row>
+        <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
+      </Provider>
+    </div>
   )
 }
 
