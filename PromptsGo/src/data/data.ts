@@ -22,7 +22,7 @@ export const data: DataType = {
           number: 3,
           legos: [
             {
-              keyWord: "My Occupation",
+              keyWord: "My occupation",
               detail: "I'm a {text}",
               varNum: 1,
             },
