@@ -1,7 +1,14 @@
-import { useActions } from "../../hooks/use-actions"
 import { useState, useEffect, useRef } from "react"
 import { Collapse, CollapseProps, Button, Tooltip, Modal, Input } from "antd"
-import { useTypedSelector } from "../../hooks/use-typed-selector"
+import type { RootState } from "../../state/store"
+import {
+  insertBlockAfter,
+  addNewLego,
+  deleteLego,
+  addMinorCategory,
+  deleteMinorCategory,
+} from "../../state/reducers/blocksReducers"
+import { useSelector, useDispatch } from "react-redux"
 
 interface BlocksContainerProps {
   selectedButton: string
@@ -10,17 +17,9 @@ interface BlocksContainerProps {
 const BlocksContainer: React.FC<BlocksContainerProps> = ({
   selectedButton,
 }) => {
-  const {
-    blocks: { dataset },
-  } = useTypedSelector((state) => state)
+  const dataset = useSelector((state: RootState) => state.blocks.dataset)
+  const dispatch = useDispatch()
 
-  const {
-    insertBlockAfter,
-    addNewBlock,
-    deleteLego,
-    addMinorCategory,
-    deleteMinorCategory,
-  } = useActions()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isMinorModalVisible, setIsMinorModalVisible] = useState(false)
   const [newBlockInfo, setNewBlockInfo] = useState({ keyword: "", detail: "" })
@@ -34,7 +33,12 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
 
   const handleMinorOk = () => {
     if (newMinorInfo.name) {
-      addMinorCategory(selected.category, newMinorInfo.name)
+      dispatch(
+        addMinorCategory({
+          category: selected.category,
+          name: newMinorInfo.name,
+        })
+      )
       setNewMinorInfo({ name: "" })
     }
     setIsMinorModalVisible(false)
@@ -52,12 +56,15 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
   const handleOk = () => {
     if (currentMinor) {
       if (selected && newBlockInfo) {
-        addNewBlock(
-          selected.category,
-          currentMinor,
-          newBlockInfo.keyword,
-          newBlockInfo.detail
+        dispatch(
+          addNewLego({
+            category: selected.category,
+            name: currentMinor,
+            keyWord: newBlockInfo.keyword,
+            detail: newBlockInfo.detail,
+          })
         )
+
         setNewBlockInfo({ keyword: "", detail: "" })
       }
     }
@@ -77,7 +84,13 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
     }
 
     timer.current = setTimeout(() => {
-      insertBlockAfter(selected.category, block.keyWord, block.detail)
+      dispatch(
+        insertBlockAfter({
+          category: selected.category,
+          keyWord: block.keyWord,
+          detail: block.detail,
+        })
+      )
       timer.current = null
     }, 250)
   }
@@ -85,11 +98,19 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
   const handleDoubleClick = (minor, block) => {
     clearTimeout(timer.current)
     timer.current = null
-    deleteLego(selected.category, minor.name, block.keyWord)
+    dispatch(
+      deleteLego({
+        category: selected.category,
+        name: minor.name,
+        keyWord: block.keyWord,
+      })
+    )
   }
 
   const handleMinorDoubleClick = (minorName) => {
-    deleteMinorCategory(selected.category, minorName)
+    dispatch(
+      deleteMinorCategory({ category: selected.category, name: minorName })
+    )
   }
 
   const selected = dataset.tables?.find(

@@ -1,15 +1,14 @@
-import { useActions } from "../../hooks/use-actions"
-import { useTypedSelector } from "../../hooks/use-typed-selector"
+import { deleteBlock, updateBlock } from "../../state/reducers/blocksReducers"
+import type { RootState } from "../../state/store"
+import { useSelector, useDispatch } from "react-redux"
 import { useEffect, useState } from "react"
 import { Input } from "antd"
 
 const Center: React.FC = () => {
-  const { deleteBlock, updateBlock } = useActions()
-
-  // retrieve the state from redux store
-  const {
-    blocks: { order, data, categories },
-  } = useTypedSelector((state) => state)
+  const categories = useSelector((state: RootState) => state.blocks.categories)
+  const order = useSelector((state: RootState) => state.blocks.order)
+  const data = useSelector((state: RootState) => state.blocks.data)
+  const dispatch = useDispatch()
 
   const [collectionState, setCollectionState] = useState([])
   const [blockCollectionState, setblockCollectionState] = useState([])
@@ -17,7 +16,7 @@ const Center: React.FC = () => {
   useEffect(() => {
     const collection = []
     for (let i = 0; i < order.length; i++) {
-      const elements = categories.get(order[i])
+      const elements = categories[order[i]]
       collection.push(...elements)
     }
     setCollectionState(collection)
@@ -31,9 +30,11 @@ const Center: React.FC = () => {
       className="mb-4"
       placeholder={block.keyWord}
       value={block.detail}
-      onChange={(e) => updateBlock(block.id, e.target.value)}
+      onChange={(e) =>
+        dispatch(updateBlock({ id: block.id, detail: e.target.value }))
+      }
       onDoubleClick={() => {
-        deleteBlock(block.category, block.id)
+        dispatch(deleteBlock({ category: block.category, id: block.id }))
       }}
     />
   ))

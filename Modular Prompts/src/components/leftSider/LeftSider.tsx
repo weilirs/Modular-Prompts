@@ -1,6 +1,7 @@
-import { useTypedSelector } from "../../hooks/use-typed-selector"
+import { clear, collect } from "../../state/reducers/blocksReducers"
+import type { RootState } from "../../state/store"
+import { useSelector, useDispatch } from "react-redux"
 import { useEffect, useState } from "react"
-import { useActions } from "../../hooks/use-actions"
 import { Button, Input, Modal } from "antd"
 import OriginalText from "./OriginalText"
 import promptperfect from "./PromptsPerfect"
@@ -12,17 +13,17 @@ const LeftSider: React.FC = () => {
 
   const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "")
 
-  const { clear, collect } = useActions()
-  const {
-    blocks: { order, data, categories },
-  } = useTypedSelector((state) => state)
+  const categories = useSelector((state: RootState) => state.blocks.categories)
+  const order = useSelector((state: RootState) => state.blocks.order)
+  const data = useSelector((state: RootState) => state.blocks.data)
+  const dispatch = useDispatch()
 
   const [blockCollectionState, setblockCollectionState] = useState([])
 
   useEffect(() => {
     const collection = []
     for (let i = 0; i < order.length; i++) {
-      const elements = categories.get(order[i])
+      const elements = categories[order[i]]
       collection.push(...elements)
     }
     setblockCollectionState(collection.map((id) => data[id]))
@@ -65,7 +66,12 @@ const LeftSider: React.FC = () => {
 
   const handleOk = () => {
     if (newInfo.collectionName) {
-      collect(blockCollectionState, newInfo.collectionName)
+      dispatch(
+        collect({
+          legos: blockCollectionState,
+          collectionName: newInfo.collectionName,
+        })
+      )
       setNewInfo({ collectionName: "" })
     }
     setIsModalVisible(false)
@@ -101,7 +107,7 @@ const LeftSider: React.FC = () => {
             <Button onClick={() => copyToClipboard(blocksText)}>
               Copy Original
             </Button>
-            <Button onClick={() => clear()}>Clear All</Button>
+            <Button onClick={() => dispatch(clear())}>Clear All</Button>
           </div>
           <div className="flex justify-around">
             <Button onClick={() => prompts()}>Optimize</Button>

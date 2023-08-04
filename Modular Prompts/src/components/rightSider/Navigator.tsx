@@ -1,32 +1,33 @@
 import type { MenuProps } from "antd"
 import { Menu, Modal, Input } from "antd"
 import React, { useState, useEffect } from "react"
-import { useTypedSelector } from "../../hooks/use-typed-selector"
-import { useActions } from "../../hooks/use-actions"
-
+import type { RootState } from "../../state/store"
+import { useSelector, useDispatch } from "react-redux"
+import {
+  addNewCategory,
+  deleteCategory,
+} from "../../state/reducers/blocksReducers"
 type NavigatorProps = {
   setSelectedButton: (value: string) => void
 }
 
 const Navigator: React.FC<NavigatorProps> = ({ setSelectedButton }) => {
-  const {
-    blocks: { categories },
-  } = useTypedSelector((state) => state)
+  const categories = useSelector((state: RootState) => state.blocks.categories)
+  const dispatch = useDispatch()
 
-  const { addNewCategory, deleteCategory } = useActions()
   const [isModalVisible, setIsModalVisible] = useState(false)
 
   const [newCategoryInfo, setNewCategoryInfo] = useState({ category: "" })
   const items: MenuProps["items"] = []
 
   // Iterate over keys of new_categories object
-  categories.forEach((value, cat) => {
+  for (const key in categories) {
     items.push({
-      label: cat,
-      key: cat,
-      onClick: () => setSelectedButton(cat),
+      label: key,
+      key: key,
+      onClick: () => setSelectedButton(key),
     })
-  })
+  }
 
   const showModal = () => {
     setIsModalVisible(true)
@@ -34,7 +35,7 @@ const Navigator: React.FC<NavigatorProps> = ({ setSelectedButton }) => {
 
   const handleOk = () => {
     if (newCategoryInfo.category) {
-      addNewCategory(newCategoryInfo.category)
+      dispatch(addNewCategory(newCategoryInfo.category))
       setNewCategoryInfo({ category: "" })
     }
     setIsModalVisible(false)
@@ -64,7 +65,7 @@ const Navigator: React.FC<NavigatorProps> = ({ setSelectedButton }) => {
   }
 
   const onDoubleClick = (key: string) => {
-    deleteCategory(key)
+    dispatch(deleteCategory(key))
   }
 
   return (
