@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef } from "react"
 import { Collapse, CollapseProps, Button, Tooltip, Modal, Input } from "antd"
 import type { RootState } from "../../state/store"
+import { AppDispatch } from "../../state/store"
 import {
   insertBlockAfter,
   addNewLego,
@@ -14,18 +15,31 @@ interface BlocksContainerProps {
   selectedButton: string
 }
 
+type BlockType = {
+  keyWord: string
+  detail: string
+}
+type MinorType = {
+  name?: string
+  number?: number
+  legos?: {
+    keyWord: string
+    detail: string
+    varNum?: number
+  }[]
+}
 const BlocksContainer: React.FC<BlocksContainerProps> = ({
   selectedButton,
 }) => {
   const dataset = useSelector((state: RootState) => state.blocks.dataset)
-  const dispatch = useDispatch()
+  const dispatch: AppDispatch = useDispatch()
 
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isMinorModalVisible, setIsMinorModalVisible] = useState(false)
   const [newBlockInfo, setNewBlockInfo] = useState({ keyword: "", detail: "" })
   const [newMinorInfo, setNewMinorInfo] = useState({ name: "" })
-  const [currentMinor, setCurrentMinor] = useState(null) // Store the current minor
-  const timer = useRef(null)
+  const [currentMinor, setCurrentMinor] = useState<string | null>(null) // Store the current minor
+  const timer = useRef<NodeJS.Timeout | null>(null)
 
   const showMinorModal = () => {
     setIsMinorModalVisible(true)
@@ -35,7 +49,7 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
     if (newMinorInfo.name) {
       dispatch(
         addMinorCategory({
-          category: selected.category,
+          category: selected!.category,
           name: newMinorInfo.name,
         })
       )
@@ -48,7 +62,7 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
     setIsMinorModalVisible(false)
   }
 
-  const showModal = (minorName) => {
+  const showModal = (minorName: string) => {
     setCurrentMinor(minorName)
     setIsModalVisible(true)
   }
@@ -76,7 +90,7 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
     setIsModalVisible(false)
   }
 
-  const handleClick = (block) => {
+  const handleClick = (block: BlockType) => {
     if (timer.current) {
       clearTimeout(timer.current)
       timer.current = null
@@ -86,7 +100,7 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
     timer.current = setTimeout(() => {
       dispatch(
         insertBlockAfter({
-          category: selected.category,
+          category: selected!.category,
           keyWord: block.keyWord,
           detail: block.detail,
         })
@@ -95,21 +109,23 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
     }, 250)
   }
 
-  const handleDoubleClick = (minor, block) => {
-    clearTimeout(timer.current)
+  const handleDoubleClick = (minor: MinorType, block: BlockType) => {
+    if (timer.current !== null) {
+      clearTimeout(timer.current)
+    }
     timer.current = null
     dispatch(
       deleteLego({
-        category: selected.category,
-        name: minor.name,
+        category: selected!.category,
+        name: minor.name!,
         keyWord: block.keyWord,
       })
     )
   }
 
-  const handleMinorDoubleClick = (minorName) => {
+  const handleMinorDoubleClick = (minorName: string) => {
     dispatch(
-      deleteMinorCategory({ category: selected.category, name: minorName })
+      deleteMinorCategory({ category: selected!.category, name: minorName })
     )
   }
 
@@ -121,7 +137,7 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
     (minor) => ({
       label: (
         <div
-          onDoubleClick={() => handleMinorDoubleClick(minor.name)}
+          onDoubleClick={() => handleMinorDoubleClick(minor.name!)}
           style={{
             display: "flex",
             alignItems: "center",
@@ -129,7 +145,7 @@ const BlocksContainer: React.FC<BlocksContainerProps> = ({
           }}
         >
           {minor.name}
-          <Button onClick={() => showModal(minor.name)}>Add Block</Button>
+          <Button onClick={() => showModal(minor.name!)}>Add Block</Button>
         </div>
       ),
       key: minor.name,

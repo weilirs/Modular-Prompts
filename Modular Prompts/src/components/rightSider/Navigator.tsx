@@ -3,6 +3,8 @@ import { Menu, Modal, Input } from "antd"
 import React, { useState, useEffect } from "react"
 import type { RootState } from "../../state/store"
 import { useSelector, useDispatch } from "react-redux"
+import { AppDispatch } from "../../state/store"
+
 import {
   addNewCategory,
   deleteCategory,
@@ -13,7 +15,7 @@ type NavigatorProps = {
 
 const Navigator: React.FC<NavigatorProps> = ({ setSelectedButton }) => {
   const categories = useSelector((state: RootState) => state.blocks.categories)
-  const dispatch = useDispatch()
+  const dispatch: AppDispatch = useDispatch()
 
   const [isModalVisible, setIsModalVisible] = useState(false)
 
@@ -35,7 +37,7 @@ const Navigator: React.FC<NavigatorProps> = ({ setSelectedButton }) => {
 
   const handleOk = () => {
     if (newCategoryInfo.category) {
-      dispatch(addNewCategory(newCategoryInfo.category))
+      dispatch(addNewCategory({ category: newCategoryInfo.category }))
       setNewCategoryInfo({ category: "" })
     }
     setIsModalVisible(false)
@@ -65,20 +67,28 @@ const Navigator: React.FC<NavigatorProps> = ({ setSelectedButton }) => {
   }
 
   const onDoubleClick = (key: string) => {
-    dispatch(deleteCategory(key))
+    dispatch(deleteCategory({ key: key }))
   }
 
   return (
     <div>
       <Menu mode="horizontal" onClick={onClick} selectedKeys={[current]}>
-        {items.map((item) => (
-          <Menu.Item
-            key={item.key}
-            onDoubleClick={() => onDoubleClick(item.key)}
-          >
-            {item.label}
-          </Menu.Item>
-        ))}
+        {items.map((item) => {
+          if (!item) return null
+          if ("label" in item)
+            return (
+              <Menu.Item
+                key={item.key}
+                onDoubleClick={() => {
+                  if (item.key !== undefined) {
+                    onDoubleClick(String(item.key))
+                  }
+                }}
+              >
+                {item.label}
+              </Menu.Item>
+            )
+        })}
       </Menu>
 
       <Modal

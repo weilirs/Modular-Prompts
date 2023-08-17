@@ -3,24 +3,38 @@ import type { RootState } from "../../state/store"
 import { useSelector, useDispatch } from "react-redux"
 import { useEffect, useState, useRef } from "react"
 import { Input, Modal, Button } from "antd"
+import { AppDispatch } from "../../state/store"
+
+interface Block {
+  id: string
+  detail: string
+  category: string
+  keyWord: string
+}
+
+type ModalVisibilityType = { [key: string]: boolean }
 
 const Center: React.FC = () => {
   const categories = useSelector((state: RootState) => state.blocks.categories)
   const order = useSelector((state: RootState) => state.blocks.order)
   const data = useSelector((state: RootState) => state.blocks.data)
-  const dispatch = useDispatch()
-
-  const [collectionState, setCollectionState] = useState([])
-  const [blockCollectionState, setblockCollectionState] = useState([])
-  const [modalVisibility, setModalVisibility] = useState({})
+  const dispatch: AppDispatch = useDispatch()
+  const [collectionState, setCollectionState] = useState<string[]>([])
+  const [blockCollectionState, setblockCollectionState] = useState<Block[]>([])
+  const [modalVisibility, setModalVisibility] = useState<ModalVisibilityType>(
+    {}
+  )
   const [inputValues, setInputValues] = useState(
-    blockCollectionState.reduce((acc, block) => {
-      acc[block.id] = block.detail
-      return acc
-    }, {})
+    blockCollectionState.reduce(
+      (acc: { [key: string]: string }, block: Block) => {
+        acc[block.id] = block.detail
+        return acc
+      },
+      {}
+    )
   )
 
-  const handleOk = (id) => {
+  const handleOk = (id: string) => {
     return () => {
       dispatch(updateBlock({ id: id, detail: inputValues[id] }))
       const newVisibility = { ...modalVisibility }
@@ -29,7 +43,7 @@ const Center: React.FC = () => {
     }
   }
 
-  const handleCancel = (id) => {
+  const handleCancel = (id: string) => {
     return () => {
       const newVisibility = { ...modalVisibility }
       newVisibility[id] = false // close the modal for this block
@@ -37,13 +51,13 @@ const Center: React.FC = () => {
     }
   }
 
-  const handleChange = (id, value) => {
+  const handleChange = (id: string, value: string) => {
     const newInputValues = { ...inputValues }
     newInputValues[id] = value
     setInputValues(newInputValues)
   }
 
-  const handleButtonClick = (id) => {
+  const handleButtonClick = (id: string) => {
     return () => {
       // Clear any existing timeouts (in case of a rapid double click)
       if (clickTimeoutRef.current) {
@@ -59,7 +73,7 @@ const Center: React.FC = () => {
     }
   }
 
-  const handleButtonDoubleClick = (id, category) => {
+  const handleButtonDoubleClick = (id: string, category: string) => {
     // Clear the timeout to prevent modal from opening
     if (clickTimeoutRef.current) {
       clearTimeout(clickTimeoutRef.current)
@@ -69,7 +83,7 @@ const Center: React.FC = () => {
   }
 
   useEffect(() => {
-    const collection = []
+    const collection: string[] = []
     for (let i = 0; i < order.length; i++) {
       const elements = categories[order[i]]
       collection.push(...elements)
@@ -81,7 +95,7 @@ const Center: React.FC = () => {
   }, [order, data, categories])
 
   const { TextArea } = Input
-  const clickTimeoutRef = useRef(null)
+  const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const renderedBlocks = blockCollectionState.map((block) => (
     <>
       <Modal

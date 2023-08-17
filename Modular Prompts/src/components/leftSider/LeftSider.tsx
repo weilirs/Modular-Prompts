@@ -1,11 +1,20 @@
 import { clear, collect } from "../../state/reducers/blocksReducers"
 import type { RootState } from "../../state/store"
 import { useSelector, useDispatch } from "react-redux"
+import { AppDispatch } from "../../state/store"
 import { useEffect, useState } from "react"
 import { Button, Input, Modal } from "antd"
 import OriginalText from "./OriginalText"
 import promptperfect from "./PromptsPerfect"
 import OptimizedText from "./OptimizedText"
+
+interface Block {
+  id: string
+  detail: string
+  category: string
+  keyWord: string
+}
+
 const LeftSider: React.FC = () => {
   const [optimizedText, setOptimizedText] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -16,12 +25,12 @@ const LeftSider: React.FC = () => {
   const categories = useSelector((state: RootState) => state.blocks.categories)
   const order = useSelector((state: RootState) => state.blocks.order)
   const data = useSelector((state: RootState) => state.blocks.data)
-  const dispatch = useDispatch()
+  const dispatch: AppDispatch = useDispatch()
 
-  const [blockCollectionState, setblockCollectionState] = useState([])
+  const [blockCollectionState, setblockCollectionState] = useState<Block[]>([])
 
   useEffect(() => {
-    const collection = []
+    const collection: string[] = []
     for (let i = 0; i < order.length; i++) {
       const elements = categories[order[i]]
       collection.push(...elements)
@@ -46,13 +55,15 @@ const LeftSider: React.FC = () => {
     }
   }
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setApiKey(event.target.value)
   }
 
   const prompts = async () => {
     try {
-      const response = await promptperfect(blocksText, "chatgpt", apiKey)
+      const response: {
+        json: () => Promise<{ result: { promptOptimized: string } }>
+      } = await promptperfect(blocksText, "chatgpt", apiKey)
       const optimized = await response.json()
       setOptimizedText(optimized.result.promptOptimized) // add this line
     } catch (err) {

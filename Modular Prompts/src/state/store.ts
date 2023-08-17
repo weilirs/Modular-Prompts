@@ -1,11 +1,8 @@
-import { createStore } from "redux"
-import reducers from "./reducers"
 import blocksReducers from "./reducers/blocksReducers"
 import { configureStore } from "@reduxjs/toolkit"
 
 import { loadState, saveState } from "../utils/localStorage"
-import throttle from "lodash/throttle"
-
+import _ from "lodash"
 export const store = configureStore({
   reducer: {
     // Define a top-level state field named `todos`, handled by `todosReducer`
@@ -13,9 +10,11 @@ export const store = configureStore({
   },
 })
 store.subscribe(
-  throttle(() => {
+  _.throttle(() => {
     saveState({
-      dataset: store.getState().blocks.dataset,
+      blocks: {
+        dataset: store.getState().blocks.dataset,
+      },
     })
   }, 1000)
 )

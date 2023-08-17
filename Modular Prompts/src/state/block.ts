@@ -7,7 +7,7 @@
 
 export interface Block {
   id: string
-  type: string
-  content: string
+  category: string
+  keyWord: string
   detail: string
 }

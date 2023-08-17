@@ -1,14 +1,14 @@
-import { Action } from "../actions"
-import { ActionType } from "../action-types"
 import { Block } from "../block"
-import { produce, enableMapSet } from "immer"
 import { data } from "../../data/data"
 import { loadState } from "../../utils/localStorage"
 import { createSlice } from "@reduxjs/toolkit"
+import { DataType } from "../../data/DataType"
+import { PayloadAction } from "@reduxjs/toolkit"
 
-const persistedState = loadState()
+const persistedState: { blocks: { dataset: DataType } } | undefined =
+  loadState()
 
-let Categories = {}
+let Categories: { [key: string]: string[] } = {}
 if (!persistedState) {
   Categories = {
     Collections: [],
@@ -19,16 +19,16 @@ if (!persistedState) {
     other_requirement: [],
   }
 } else {
-  const tables = persistedState.blocks.dataset.tables
-  for (const table of tables) {
+  const tables: DataType["tables"] = persistedState.blocks.dataset.tables
+  for (const table of tables || []) {
     Categories[table.category] = []
   }
 }
 interface BlocksState {
   order: string[] // order of types
   data: { [key: string]: Block }
-  categories: { [key: string]: [] } // map from type to array of ids
-  dataset: {}
+  categories: { [key: string]: string[] } // map from type to array of ids
+  dataset: DataType
 }
 
 const initialState: BlocksState = {
@@ -42,7 +42,14 @@ const blocksSlice = createSlice({
   name: "blocks",
   initialState,
   reducers: {
-    insertBlockAfter(state, action) {
+    insertBlockAfter(
+      state,
+      action: PayloadAction<{
+        category: string
+        keyWord: string
+        detail: string
+      }>
+    ) {
       const newBlock: Block = {
         id: Math.random().toString(36).substr(2, 9),
         category: action.payload.category,
@@ -63,7 +70,13 @@ const blocksSlice = createSlice({
         state.order.push(action.payload.category)
       }
     },
-    deleteBlock(state, action) {
+    deleteBlock(
+      state,
+      action: PayloadAction<{
+        category: string
+        id: string
+      }>
+    ) {
       // delete the id from the corresponding type array
       const cat = action.payload.category
       const newValues = state.categories[cat].filter(
@@ -78,10 +91,24 @@ const blocksSlice = createSlice({
         state.order = state.order.filter((category) => category !== cat)
       }
     },
-    updateBlock(state, action) {
+    updateBlock(
+      state: BlocksState,
+      action: PayloadAction<{
+        detail: string
+        id: string
+      }>
+    ) {
       state.data[action.payload.id].detail = action.payload.detail
     },
-    addNewLego(state, action) {
+    addNewLego(
+      state: BlocksState,
+      action: PayloadAction<{
+        category: string
+        name: string
+        detail: string
+        keyWord: string
+      }>
+    ) {
       const category = action.payload.category
       const name = action.payload.name
       const newLego = {
@@ -89,27 +116,34 @@ const blocksSlice = createSlice({
         detail: action.payload.detail,
         useTime: 1,
       }
-      for (const cat of state.dataset.tables) {
+      for (const cat of state.dataset.tables!) {
         if (cat.category === category) {
           const minorCategories = cat.minorCategories
-          for (const minorCat of minorCategories) {
+          for (const minorCat of minorCategories!) {
             if (name === minorCat.name) {
-              minorCat.legos.push(newLego)
+              minorCat.legos!.push(newLego)
             }
           }
         }
       }
     },
-    deleteLego(state, action) {
+    deleteLego(
+      state: BlocksState,
+      action: PayloadAction<{
+        category: string
+        name: string
+        keyWord: string
+      }>
+    ) {
       const category = action.payload.category
       const name = action.payload.name
       const keyWord = action.payload.keyWord
-      for (const cat of state.dataset.tables) {
+      for (const cat of state.dataset.tables!) {
         if (cat.category === category) {
           const minorCategories = cat.minorCategories
-          for (const minorCat of minorCategories) {
+          for (const minorCat of minorCategories!) {
             if (name === minorCat.name) {
-              minorCat.legos = minorCat.legos.filter(
+              minorCat.legos = minorCat.legos!.filter(
                 (lego) => lego.keyWord !== keyWord
               )
             }
@@ -117,32 +151,19 @@ const blocksSlice = createSlice({
         }
       }
     },
-    updateLego(state, action) {
+
+    addMinorCategory(
+      state: BlocksState,
+      action: PayloadAction<{
+        category: string
+        name: string
+      }>
+    ) {
       const category = action.payload.category
       const name = action.payload.name
-      const newLego = {
-        keyWord: action.payload.keyWord,
-        detail: action.payload.detail,
-        useTime: 1,
-      }
-      state.dataset.tables.forEach((table) => {
+      state.dataset.tables?.forEach((table) => {
         if (table.category === category) {
-          table.legos = table.legos.map((lego) => {
-            if (lego.keyWord === name) {
-              return newLego
-            } else {
-              return lego
-            }
-          })
-        }
-      })
-    },
-    addMinorCategory(state, action) {
-      const category = action.payload.category
-      const name = action.payload.name
-      state.dataset.tables.forEach((table) => {
-        if (table.category === category) {
-          table.minorCategories.push({
+          table.minorCategories?.push({
             name: name,
             number: 0,
             legos: [],
@@ -150,33 +171,42 @@ const blocksSlice = createSlice({
         }
       })
     },
-    deleteMinorCategory(state, action) {
+    deleteMinorCategory(
+      state: BlocksState,
+      action: PayloadAction<{
+        category: string
+        name: string
+      }>
+    ) {
       const category = action.payload.category
       const name = action.payload.name
-      for (const cat of state.dataset.tables) {
+      for (const cat of state.dataset.tables!) {
         if (cat.category === category) {
-          cat.minorCategories = cat.minorCategories.filter(
+          cat.minorCategories = cat.minorCategories?.filter(
             (minorCat) => minorCat.name !== name
           )
         }
       }
     },
-    addNewCategory(state, action) {
-      const category = action.payload
-      state.dataset.tables.push({
+    addNewCategory(
+      state: BlocksState,
+      action: PayloadAction<{ category: string }>
+    ) {
+      const category = action.payload.category
+      state.dataset.tables?.push({
         category: category,
         minorCategories: [],
       })
       state.categories[category] = []
     },
-    deleteCategory(state, action) {
-      const category = action.payload
-      state.dataset.tables = state.dataset.tables.filter(
+    deleteCategory(state: BlocksState, action: PayloadAction<{ key: string }>) {
+      const category = action.payload.key
+      state.dataset.tables = state.dataset.tables?.filter(
         (cat) => cat.category !== category
       )
       delete state.categories[category]
     },
-    clear(state) {
+    clear(state: BlocksState) {
       state.order = []
       state.data = {}
 
@@ -184,13 +214,21 @@ const blocksSlice = createSlice({
         state.categories[category] = []
       }
     },
-    collect(state, action) {
+    collect(
+      state: BlocksState,
+      action: PayloadAction<{
+        legos: Block[]
+        collectionName: string
+      }>
+    ) {
       const legoCollections = action.payload.legos
       const collectionName = action.payload.collectionName
-      if (state.categories.hasOwnProperty("Collections")) {
-        for (const cat of state.dataset.tables) {
+      if (
+        Object.prototype.hasOwnProperty.call(state.categories, "Collections")
+      ) {
+        for (const cat of state.dataset.tables!) {
           if (cat.category === "Collections") {
-            cat.minorCategories.push({
+            cat.minorCategories?.push({
               name: collectionName,
               number: 0,
               legos: legoCollections,
@@ -198,7 +236,7 @@ const blocksSlice = createSlice({
           }
         }
       } else {
-        state.dataset.tables.push({
+        state.dataset.tables?.push({
           category: "Collections",
           minorCategories: [
             {
@@ -220,7 +258,6 @@ export const {
   updateBlock,
   addNewLego,
   deleteLego,
-  updateLego,
   addMinorCategory,
   deleteMinorCategory,
   addNewCategory,
